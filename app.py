@@ -1,4 +1,4 @@
-import os, json, uuid
+import os, json, uuid, time, re
 from datetime import datetime, timezone
 from pathlib import Path
 import requests
@@ -28,24 +28,36 @@ def heuristic_plan(text):
     if any(x in t for x in ["авито","реклам","маркет","продвиж"]): return [("marketing","Разработать стратегию"),("analyst","Оценить варианты"),("reviewer","Проверить план")]
     return [("analyst","Разобрать задачу"),("architect","Сформировать план"),("reviewer","Проверить результат")]
 
-def call_groq(prompt, system="Ты специализированный агент внутри AI Command Center. Не выдумывай выполненные действия."):
+def call_groq(prompt, system="Ты специализированный агент внутри AI Command Center. Не выдумывай выполненные действия.", max_tokens=1200, retries=3):
     key=os.getenv("GROQ_API_KEY")
     if not key: return None
-    try:
-        r=requests.post("https://api.groq.com/openai/v1/chat/completions",
-            headers={"Authorization":f"Bearer {key}","Content-Type":"application/json"},
-            json={"model":os.getenv("GROQ_MODEL","openai/gpt-oss-120b"),"temperature":0.2,
-                  "messages":[{"role":"system","content":system},{"role":"user","content":prompt}]},timeout=60)
-        r.raise_for_status()
-        data=r.json()
-        return data["choices"][0]["message"]["content"]
-    except requests.HTTPError as e:
-        body=""
-        try: body=e.response.text[:1000]
-        except Exception: pass
-        return {"error":f"Groq HTTP {e.response.status_code if e.response is not None else '?'}: {body or str(e)}"}
-    except Exception as e:
-        return {"error":f"{type(e).__name__}: {str(e)}"}
+    for attempt in range(retries):
+        try:
+            r=requests.post("https://api.groq.com/openai/v1/chat/completions",
+                headers={"Authorization":f"Bearer {key}","Content-Type":"application/json"},
+                json={"model":os.getenv("GROQ_MODEL","openai/gpt-oss-120b"),"temperature":0.2,
+                      "max_tokens":max_tokens,
+                      "messages":[{"role":"system","content":system},{"role":"user","content":prompt}]},timeout=60)
+            r.raise_for_status()
+            data=r.json()
+            return data["choices"][0]["message"]["content"]
+        except requests.HTTPError as e:
+            body=""
+            try: body=e.response.text[:1200]
+            except Exception: pass
+            status=e.response.status_code if e.response is not None else None
+            if status==429 and attempt < retries-1:
+                m=re.search(r"try again in ([0-9.]+)s", body, re.I)
+                wait=float(m.group(1)) if m else 5.0
+                time.sleep(min(max(wait+0.5,1.0),20.0))
+                continue
+            return {"error":f"Groq HTTP {status or '?'}: {body or str(e)}"}
+        except Exception as e:
+            if attempt < retries-1:
+                time.sleep(2)
+                continue
+            return {"error":f"{type(e).__name__}: {str(e)}"}
+    return {"error":"Groq: превышено число попыток"}
 
 def plan_task(text):
     key=os.getenv("GROQ_API_KEY")
@@ -121,7 +133,7 @@ def run_task(task_id):
 Предыдущие результаты команды:
 {previous[-12000:]}
 Выполни свою часть задачи интеллектуально. Не утверждай, что создавал файлы, запускал код, делал commit или выполнял внешние действия, если соответствующего инструмента нет.
-Дай конкретный результат, который следующий агент сможет использовать."""
+Отвечай кратко и конкретно, максимум около 1000 токенов. Не повторяй исходную задачу. Дай результат, который следующий агент сможет использовать."""
         result=call_groq(prompt, system=f"Ты {role} внутри многоагентной команды. Работаешь как реальный специалист, но не выдумываешь внешние действия.")
         if isinstance(result,dict) and result.get("error"):
             err=result["error"]
