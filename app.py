@@ -210,47 +210,83 @@ def approve_task(task_id):
     add_event(s,"approval",f"{task_id}: запуск подтверждён пользователем");save_state(s)
     return jsonify(task)
 def execute_task(task_id):
-    s=load_state(); task=next((x for x in s["tasks"] if x["id"]==task_id),None)
-    if not task: return
+    max_rounds=3
     previous=""
-    agents=task["plan"].get("agents",[])
-    for idx,a in enumerate(agents,1):
-        role=a.get("role","specialist")
-        prompt=f"""Ты агент №{idx} в команде AI Command Center.
+    for round_no in range(1,max_rounds+1):
+        s=load_state(); task=next((x for x in s["tasks"] if x["id"]==task_id),None)
+        if not task: return
+        agents=task["plan"].get("agents",[])
+        # В первом раунде выполняем полную команду. В следующих — только исправление,
+        # повторная проверка и финальный reviewer.
+        if round_no==1:
+            run_agents=agents
+        else:
+            run_agents=[a for a in agents if a.get("role") in ("debugger","tester","reviewer")]
+        for idx,a in enumerate(run_agents,1):
+            role=a.get("role","specialist")
+            prompt=f"""Ты агент AI Command Center. Раунд {round_no}.
 Исходная задача: {task["description"]}
 Твоя роль: {role}
 Твоя инструкция: {a.get("instructions","")}
 Предыдущие результаты команды:
-{previous[-8000:]}
-Выполни свою часть задачи интеллектуально. Не утверждай, что создавал файлы, запускал код, делал commit или выполнял внешние действия, если соответствующего инструмента нет.
-Отвечай кратко и конкретно, максимум около 700 токенов. Не повторяй исходную задачу. Дай результат, который следующий агент сможет использовать. Если твоя роль developer/coder/backend_developer/frontend_developer/debugger и задача требует изменения ПО, в конце верни JSON-блок вида {{"actions":[{{"action":"write_file","path":"index.html","content":"..."}}]}}. Используй только необходимые файлы.
-Если ты tester, проверяй фактическое состояние проекта и ищи ошибки, неполные места и несоответствия задаче. Если ты reviewer, дай финальный PASS/FAIL и перечисли оставшиеся проблемы."""
-        result=call_groq(prompt, system=f"Ты {role} внутри многоагентной команды. Работаешь как реальный специалист, но не выдумываешь внешние действия.", max_tokens=800)
-        if isinstance(result,dict) and result.get("error"):
+{previous[-10000:]}
+Контекст текущего GitHub-проекта:
+{github_project_context()}
+Работай по задаче. Нельзя утверждать, что файл изменён, commit сделан или код запущен, если это не подтверждено инструментом.
+КРИТИЧЕСКИ ВАЖНО для developer/coder/backend_developer/frontend_developer/debugger:
+если требуется изменить проект, ты ОБЯЗАН предложить полный JSON-блок в конце:
+{{"actions":[{{"action":"write_file","path":"...","content":"полное содержимое файла"}}]}}
+Используй существующий проект как основу и создавай только необходимые файлы.
+Tester должен проверять состояние GitHub после предыдущих изменений и честно дать PASS/FAIL.
+Reviewer обязан дать строку VERDICT: PASS или VERDICT: FAIL.
+Если FAIL — перечисли конкретные исправления для Debugger.
+"""
+            result=call_groq(prompt, system=f"Ты {role}. Ты обязан дать практический результат, а не общий совет.", max_tokens=1000)
+            if isinstance(result,dict) and result.get("error"):
+                s=load_state(); task=next((x for x in s["tasks"] if x["id"]==task_id),None)
+                if task:
+                    err=result["error"]; task["status"]="failed"; task["updated_at"]=now()
+                    task["outputs"].append({"agent":a,"result":err,"error":True,"created_at":now()})
+                    add_event(s,"error",f"{task_id}: ошибка агента {a.get('name',role)} — {err[:500]}"); save_state(s)
+                return
+            out=result or "AI API не подключён."
+            if role in ("developer","coder","backend_developer","frontend_developer","debugger") and isinstance(out,str):
+                actions=extract_github_actions(out)
+                if actions:
+                    gh=github_execute_actions(actions,task_id)
+                    out += "\n\n[GITHUB EXECUTION]\n" + json.dumps(gh,ensure_ascii=False)
+                    s=load_state(); add_event(s,"github",f"{task_id}: GitHub действий выполнено {gh.get('executed',0)}"); save_state(s)
+                else:
+                    out += "\n\n[GITHUB EXECUTION]\n" + json.dumps({"executed":0,"error":"Агент не предоставил actions для изменения проекта"},ensure_ascii=False)
+            s=load_state(); task=next((x for x in s["tasks"] if x["id"]==task_id),None)
+            if not task: return
+            task["outputs"].append({"agent":a,"result":out,"round":round_no,"created_at":now()})
+            previous += f"\n\n[round {round_no} {role}]\n{out}"
+            agent_rec=next((x for x in s["agents"] if x.get("task_id")==task_id and x.get("role")==role),None)
+            if agent_rec: agent_rec["status"]="completed"
+            save_state(s)
+        # Определяем итог reviewer. PASS завершает задачу; FAIL запускает новый repair round.
+        reviewer_outputs=[o for o in task.get("outputs",[]) if o.get("agent",{}).get("role")=="reviewer"]
+        verdict=""
+        if reviewer_outputs:
+            verdict=(reviewer_outputs[-1].get("result") or "").upper()
+        if "VERDICT: PASS" in verdict or ("PASS" in verdict and "FAIL" not in verdict[-200:]):
             s=load_state(); task=next((x for x in s["tasks"] if x["id"]==task_id),None)
             if task:
-                err=result["error"]; task["status"]="failed"; task["updated_at"]=now()
-                task["outputs"].append({"agent":a,"result":err,"error":True,"created_at":now()})
-                add_event(s,"error",f"{task_id}: ошибка агента {a.get('name',role)} — {err[:500]}"); save_state(s)
+                task["status"]="completed"; task["updated_at"]=now()
+                add_event(s,"task",f"{task_id}: Reviewer подтвердил PASS, задача завершена"); save_state(s)
             return
-        out=result or "AI API не подключён."
-        if role in ("developer","coder","backend_developer","frontend_developer","debugger") and isinstance(out,str):
-            actions=extract_github_actions(out)
-            if actions:
-                gh=github_execute_actions(actions,task_id)
-                out += "\n\n[GITHUB EXECUTION]\n" + json.dumps(gh,ensure_ascii=False)
-                s=load_state(); add_event(s,"github",f"{task_id}: GitHub действий выполнено {gh.get('executed',0)}"); save_state(s)
+        if round_no<max_rounds:
+            s=load_state(); task=next((x for x in s["tasks"] if x["id"]==task_id),None)
+            if task:
+                task["status"]="running"; task["updated_at"]=now()
+                add_event(s,"loop",f"{task_id}: Reviewer дал FAIL — запускается раунд исправления {round_no+1}"); save_state(s)
+                continue
         s=load_state(); task=next((x for x in s["tasks"] if x["id"]==task_id),None)
-        if not task: return
-        task["outputs"].append({"agent":a,"result":out,"created_at":now()})
-        previous += f"\n\n[{role}]\n{out}"
-        agent_rec=next((x for x in s["agents"] if x.get("task_id")==task_id and x.get("role")==role and x.get("status") in ("assigned","running")),None)
-        if agent_rec: agent_rec["status"]="completed"
-        save_state(s)
-    s=load_state(); task=next((x for x in s["tasks"] if x["id"]==task_id),None)
-    if task:
-        task["status"]="completed"; task["updated_at"]=now()
-        add_event(s,"task",f"{task_id}: команда завершила последовательное выполнение"); save_state(s)
+        if task:
+            task["status"]="failed"; task["updated_at"]=now()
+            add_event(s,"task",f"{task_id}: Reviewer не подтвердил PASS после {max_rounds} раундов"); save_state(s)
+        return
 
 @app.post("/api/task/<task_id>/run")
 def run_task(task_id):
