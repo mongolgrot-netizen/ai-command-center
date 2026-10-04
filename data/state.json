@@ -304,10 +304,10 @@
       "approved": true,
       "review_verdict": null,
       "created_at": "2026-10-04T20:08:25.262475+00:00",
-      "updated_at": "2026-10-04T20:14:36.723929+00:00",
+      "updated_at": "2026-10-04T20:14:53.278105+00:00",
       "current_round": 1,
-      "current_agent": null,
-      "current_role": null
+      "current_agent": "Dmitri",
+      "current_role": "debugger"
     },
     {
       "id": "TASK-293159BA77",
@@ -726,6 +726,12 @@
   "projects": [],
   "memory": [],
   "events": [
+    {
+      "id": "5a4da23cb8",
+      "kind": "agent_start",
+      "message": "TASK-5848598EF4: запущен Dmitri (debugger), раунд 1",
+      "created_at": "2026-10-04T20:14:53.278136+00:00"
+    },
     {
       "id": "9e2ae73696",
       "kind": "agent_start",
