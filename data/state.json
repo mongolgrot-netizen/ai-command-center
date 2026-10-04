@@ -129,6 +129,16 @@
           "result": "AI API не подключён.",
           "round": 1,
           "created_at": "2026-10-04T20:25:10.900759+00:00"
+        },
+        {
+          "agent": {
+            "role": "architect",
+            "name": "Alex",
+            "instructions": "Design the overall structure of the web app (HTML, CSS, optional JS), decide on folder layout, and draft a README with setup instructions."
+          },
+          "result": "{\n  \"actions\": [\n    {\n      \"action\": \"write_file\",\n      \"path\": \"projects/test-project-3/index.html\",\n      \"content\": \"<!doctype html>\\n<html lang=\\\"ru\\\">\\n<head>\\n  <meta charset=\\\"utf",
+          "round": 1,
+          "created_at": "2026-10-04T20:25:24.254839+00:00"
         }
       ],
       "approved": true,
@@ -136,8 +146,8 @@
       "created_at": "2026-10-04T20:08:25.262475+00:00",
       "updated_at": "2026-10-04T20:25:14.009680+00:00",
       "current_round": 1,
-      "current_agent": "Alex",
-      "current_role": "architect",
+      "current_agent": null,
+      "current_role": null,
       "execution_started_at": "2026-10-04T20:23:49.477242+00:00"
     },
     {
