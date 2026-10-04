@@ -96,8 +96,31 @@ def github_execute_actions(actions,task_id):
         return {"executed":0,"skipped":len(actions),"reason":"GITHUB_WRITE_ENABLED не включён"}
     results=[]
     for action in actions[:10]:
-        if action.get("action") not in ("write_file","create_file","update_file"):
-            results.append({"action":action.get("action"),"ok":False,"error":"Недопустимое действие"}); continue
+        action_type=action.get("action")
+        if action_type=="move_file":
+            source=str(action.get("source","")).strip().lstrip("/")
+            destination=str(action.get("destination","")).strip().lstrip("/")
+            if not source or not destination:
+                results.append({"action":action_type,"ok":False,"error":"Нужны source и destination"}); continue
+            if ".." in Path(source).parts or ".." in Path(destination).parts or source.startswith(".git/") or destination.startswith(".git/"):
+                results.append({"action":action_type,"ok":False,"error":"Недопустимый путь"}); continue
+            src=github_get_file(source)
+            if src.get("error"):
+                results.append({"action":action_type,"ok":False,"error":src["error"]}); continue
+            import base64
+            try:
+                content=base64.b64decode(src.get("content","")).decode("utf-8","replace")
+            except Exception as e:
+                results.append({"action":action_type,"ok":False,"error":f"Не удалось прочитать source: {e}"}); continue
+            dst=github_get_file(destination)
+            dst_sha=dst.get("sha") if not dst.get("error") else None
+            created=github_write_file(destination,content,f"AI Command Center: {task_id} — move_file",sha=dst_sha)
+            if created.get("error"):
+                results.append({"action":action_type,"ok":False,"error":created["error"]}); continue
+            results.append({"action":action_type,"ok":True,"source":source,"destination":destination,"note":"Файл скопирован в destination; исходный файл сохранён безопасно."})
+            continue
+        if action_type not in ("write_file","create_file","update_file"):
+            results.append({"action":action_type,"ok":False,"error":"Недопустимое действие"}); continue
         path=str(action.get("path","")).strip().lstrip("/")
         file_content=action.get("content")
         if not path or not isinstance(file_content,str):
@@ -108,7 +131,7 @@ def github_execute_actions(actions,task_id):
         if existing.get("error") and "HTTP 404" not in existing.get("error",""):
             results.append({"path":path,"ok":False,"error":existing["error"]}); continue
         sha=existing.get("sha")
-        out=github_write_file(path,file_content,f"AI Command Center: {task_id} — {action.get('action')}",sha=sha)
+        out=github_write_file(path,file_content,f"AI Command Center: {task_id} — {action_type}",sha=sha)
         if out.get("error"): results.append({"path":path,"ok":False,"error":out["error"]})
         else: results.append({"path":path,"ok":True,"commit":out.get("commit",{}).get("sha")})
     return {"executed":sum(1 for x in results if x.get("ok")),"results":results}
