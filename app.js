@@ -12,7 +12,8 @@ $("events").innerHTML=s.events.slice(0,10).map(e=>`<div class="item"><b>${esc(e.
 function showOutputs(t){
  selectedTaskId=t?.id||selectedTaskId;
  const outs=t.outputs||[];
- $("result").innerHTML=`<div class="plan"><b>🤖 ${esc(t.status)} — ${esc(t.id)}</b>${outs.map((o,i)=>`<div class="item"><b>${i+1}. ${esc(o.agent?.name||o.agent?.role||"Agent")}</b><div class="muted">${esc(o.agent?.role||"")}</div><p>${esc(typeof o.result==="string"?o.result:JSON.stringify(o.result))}</p></div>`).join("")}</div>`;
+ const live=t.current_agent?'<div class="plan">⚙️ Сейчас работает: <b>'+esc(t.current_agent)+'</b> · '+esc(t.current_role||"agent")+' · раунд '+esc(t.current_round||1)+'</div>':"";
+ $("result").innerHTML='<div class="plan"><b>🤖 '+esc(t.status)+' — '+esc(t.id)+'</b>'+live+outs.map((o,i)=>'<div class="item"><b>'+(i+1)+'. '+esc(o.agent?.name||o.agent?.role||"Agent")+'</b><div class="muted">'+esc(o.agent?.role||"")+'</div><p>'+esc(typeof o.result==="string"?o.result:JSON.stringify(o.result))+'</p></div>').join("")+'</div>';
 }
 function bindApproveButtons(){
  document.querySelectorAll(".approveBtn").forEach(b=>b.onclick=async()=>{
