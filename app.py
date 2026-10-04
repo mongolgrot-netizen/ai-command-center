@@ -58,7 +58,7 @@ def plan_task(text):
 
 def create_task_internal(text):
     s=load_state(); plan=plan_task(text)
-    task={"id":"TASK-"+uuid.uuid4().hex[:10].upper(),"title":text[:120],"description":text,"status":"planned","plan":plan,"outputs":[],"created_at":now(),"updated_at":now()}
+    task={"id":"TASK-"+uuid.uuid4().hex[:10].upper(),"title":text[:120],"description":text,"status":"planned","plan":plan,"outputs":[],"approved":False,"created_at":now(),"updated_at":now()}
     s["tasks"].insert(0,task)
     for a in plan.get("agents",[]):
         s["agents"].insert(0,{"id":"AGENT-"+uuid.uuid4().hex[:10].upper(),"name":a.get("name","Agent"),"role":a.get("role","specialist"),
@@ -88,16 +88,45 @@ def task_status(task_id):
         if t["id"]==task_id:
             t["status"]=status;t["updated_at"]=now();add_event(s,"status",f"{task_id}: {status}");save_state(s);return jsonify(t)
     return jsonify({"error":"Задача не найдена"}),404
+@app.post("/api/task/<task_id>/approve")
+def approve_task(task_id):
+    s=load_state(); task=next((x for x in s["tasks"] if x["id"]==task_id),None)
+    if not task:return jsonify({"error":"Задача не найдена"}),404
+    task["approved"]=True; task["status"]="approved"; task["updated_at"]=now()
+    add_event(s,"approval",f"{task_id}: запуск подтверждён пользователем");save_state(s)
+    return jsonify(task)
 @app.post("/api/task/<task_id>/run")
 def run_task(task_id):
     s=load_state(); task=next((x for x in s["tasks"] if x["id"]==task_id),None)
     if not task:return jsonify({"error":"Задача не найдена"}),404
-    if s["settings"].get("approval_required",True):return jsonify({"error":"Требуется подтверждение запуска","task":task}),409
-    task["status"]="running"; task["outputs"]=[]
-    for a in task["plan"].get("agents",[]):
-        result=call_groq(f"Задача: {task['description']}\nРоль: {a.get('role')}\nИнструкция: {a.get('instructions')}\nДай конкретный результат в рамках роли.")
-        task["outputs"].append({"agent":a,"result":result or "AI API не подключён; доступно только планирование.","created_at":now()})
-    task["status"]="completed";task["updated_at"]=now();add_event(s,"task",f"{task_id}: команда завершила доступные этапы");save_state(s);return jsonify(task)
+    if s["settings"].get("approval_required",True) and not task.get("approved",False):
+        return jsonify({"error":"Требуется подтверждение запуска","task":task}),409
+    task["status"]="running"; task["outputs"]=[]; save_state(s)
+    previous=""
+    agents=task["plan"].get("agents",[])
+    for idx,a in enumerate(agents,1):
+        role=a.get("role","specialist")
+        prompt=f"""Ты агент №{idx} в команде AI Command Center.
+Исходная задача: {task["description"]}
+Твоя роль: {role}
+Твоя инструкция: {a.get("instructions","")}
+Предыдущие результаты команды:
+{previous[-12000:]}
+Выполни свою часть задачи интеллектуально. Не утверждай, что создавал файлы, запускал код, делал commit или выполнял внешние действия, если соответствующего инструмента нет.
+Дай конкретный результат, который следующий агент сможет использовать."""
+        result=call_groq(prompt, system=f"Ты {role} внутри многоагентной команды. Работаешь как реальный специалист, но не выдумываешь внешние действия.")
+        if isinstance(result,dict) and result.get("error"):
+            task["status"]="failed"; task["updated_at"]=now()
+            task["outputs"].append({"agent":a,"result":result,"created_at":now()})
+            add_event(s,"error",f"{task_id}: ошибка агента {a.get('name',role)}")
+            save_state(s); return jsonify(task),502
+        out=result or "AI API не подключён."
+        task["outputs"].append({"agent":a,"result":out,"created_at":now()})
+        previous += f"\n\n[{role}]\n{out}"
+        agent_rec=next((x for x in s["agents"] if x.get("task_id")==task_id and x.get("role")==role and x.get("status") in ("assigned","running")),None)
+        if agent_rec: agent_rec["status"]="completed"
+        save_state(s)
+    task["status"]="completed";task["updated_at"]=now();add_event(s,"task",f"{task_id}: команда завершила последовательное выполнение");save_state(s);return jsonify(task)
 @app.post("/api/memory")
 def memory():
     content=(request.get_json(silent=True) or {}).get("content","").strip()
