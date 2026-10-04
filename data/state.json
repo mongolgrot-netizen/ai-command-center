@@ -4,7 +4,7 @@
       "id": "TASK-5848598EF4",
       "title": "Создай простое веб-приложение «Тестовый проект 3» с заголовком, описанием и кнопкой «Начать». Создай файлы в GitHub. Про",
       "description": "Создай простое веб-приложение «Тестовый проект 3» с заголовком, описанием и кнопкой «Начать». Создай файлы в GitHub. Проведи тестирование. Если найдёшь ошибку — исправь её. Заверши только после VERDICT: PASS.",
-      "status": "running",
+      "status": "failed",
       "plan": {
         "summary": "Create a simple web application named “Тестовый проект 3” with a title, description, and a “Начать” button, store the source files in a new GitHub repository, run automated tests, fix any issues found, and deliver a final verdict of PASS.",
         "agents": [
@@ -189,16 +189,26 @@
           "result": "{\n  \"actions\": [\n    {\n      \"action\": \"write_file\",\n      \"path\": \"projects/test-project-3/index.html\",\n      \"content\": \"<!doctype html>\\n<html lang=\\\"ru\\\">\\n<head>\\n  <meta charset=\\\"utf-8\\\">\\n  <meta name=\\\"viewport\\\" content=\\\"width=device-width, initial-scale=1\\\">\\n  <title>Тестовый проект 3</title>\\n  <link rel=\\\"stylesheet\\\" href=\\\"style.css\\\">\\n</head>\\n<body>\\n  <div class=\\\"container\\\">\\n    <h1>Тестовый проект 3</h1>\\n    <p>Это простое веб‑приложение, демонстрирующее заголовок, описание и кнопку «Начать».</p>\\n    <button id=\\\"startBtn\\\">Начать</button>\\n  </div>\\n  <script src=\\\"script.js\\\"></script>\\n</body>\\n</html>\"\n    },\n    {\n      \"action\": \"write_file\",\n      \"path\": \"projects/test-project-3/style.css\",\n      \"content\": \"/* Basic styling for Тестовый проект 3 */\\nbody {\\n  margin: 0;\\n  font-family: system-ui, -apple-system, \\\"Segoe UI\\\", sans-serif;\\n  background-color: #f5f5f5;\\n  color: #333;\\n  display: flex;\\n  justify-content: center;\\n  align-items: center;\\n  height: 100vh;\\n}\\n\\n.container {\\n  text-align: center;\\n  background: #fff;\\n  padding: 2rem;\\n  border-radius: 8px;\\n  box-shadow: 0 4px 12px rgba(0,0,0,0.1);\\n}\\n\\nh1 {\\n  margin-bottom: 0.5rem;\\n  font-size: 2rem;\\n}\\n\\np {\\n  margin-bottom: 1.5rem;\\n  font-size: 1rem;\\n}\\n\\nbutton {\\n  padding: 0.75rem 1.5rem;\\n  font-size: 1rem;\\n  background-color: #0069d9;\\n  color: #fff;\\n  border: none;\\n  border-radius: 4px;\\n  cursor: pointer;\\n}\\n\\nbutton:hover {\\n  background-color: #0053b3;\\n}\"\n    },\n    {\n      \"action\": \"write_file\",\n      \"path\": \"projects/test-project-3/script.js\",\n      \"content\": \"// Simple script for the \\\"Начать\\\" button\\ndocument.addEventListener('DOMContentLoaded', function () {\\n  const btn = document.getElementById('startBtn');\\n  btn.addEventListener('click', function () {\\n    alert('Кнопка \\\"Начать\\\" нажата!');\\n  });\\n});\"\n    },\n    {\n      \"action\": \"write_file\",\n      \"path\": \"projects/test-project-3/.gitignore\",\n      \"content\": \"# Node modules (if any)\\nnode_modules/\\n\\n# OS files\\n.DS_Store\\nThumbs.db\\n\\n# Build artifacts\\n/dist\\n\"\n    },\n    {\n      \"action\": \"write_file\",\n      \"path\": \"projects/test-project-3/README.md\",\n      \"content\": \"# Тестовый проект 3\\n\\nПростое веб‑приложение с заголовком, описанием и кнопкой «Начать». Склонируйте репозиторий и откройте `index.html` в браузере.\\n\"\n    }\n  ]\n}\n\n[GITHUB EXECUTION]\n{\"executed\": 5, \"results\": [{\"path\": \"projects/test-project-3/index.html\", \"ok\": true, \"commit\": \"f51e129cd5426197b46a2540ad532aee9ab8df88\"}, {\"path\": \"projects/test-project-3/style.css\", \"ok\": true, \"commit\": \"b0d30950eda4ce9512bacedba7e6fd8173203f75\"}, {\"path\": \"projects/test-project-3/script.js\", \"ok\": true, \"commit\": \"9912ca572ac62db6dc5ff6c775be0ef82d406542\"}, {\"path\": \"projects/test-project-3/.gitignore\", \"ok\": true, \"commit\": \"262fdf6036ae7886d53bc704f786644c03c0ef68\"}, {\"path\": \"projects/test-project-3/README.md\", \"ok\": true, \"commit\": \"9f36c37bf65e6702ef509724e36e6b4185eb87fe\"}]}",
           "round": 1,
           "created_at": "2026-10-04T20:27:07.908882+00:00"
+        },
+        {
+          "agent": {
+            "role": "architect",
+            "name": "Alex",
+            "instructions": "Design the overall structure of the web app (HTML, CSS, optional JS), decide on folder layout, and draft a README with setup instructions."
+          },
+          "result": "Groq HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01m419wfeke8985aqw9bx3dsh4` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 199930, Requested 1541. Please try again in 10m35.472s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}\n",
+          "error": true,
+          "created_at": "2026-10-04T20:27:31.220794+00:00"
         }
       ],
       "approved": true,
       "review_verdict": null,
       "created_at": "2026-10-04T20:08:25.262475+00:00",
-      "updated_at": "2026-10-04T20:27:17.424935+00:00",
+      "updated_at": "2026-10-04T20:27:31.220778+00:00",
       "current_round": 1,
-      "current_agent": "Alex",
-      "current_role": "architect",
-      "execution_started_at": "2026-10-04T20:23:49.477242+00:00"
+      "current_agent": null,
+      "current_role": null,
+      "execution_started_at": null
     },
     {
       "id": "TASK-293159BA77",
@@ -617,6 +627,12 @@
   "projects": [],
   "memory": [],
   "events": [
+    {
+      "id": "ea00942360",
+      "kind": "error",
+      "message": "TASK-5848598EF4: ошибка агента Alex — Groq HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01m419wfeke8985aqw9bx3dsh4` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 199930, Requested 1541. Please try again in 10m35.472s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}\n",
+      "created_at": "2026-10-04T20:27:31.220838+00:00"
+    },
     {
       "id": "1baf5f6976",
       "kind": "agent_start",
