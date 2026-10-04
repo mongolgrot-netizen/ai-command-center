@@ -4,7 +4,7 @@
       "id": "TASK-293159BA77",
       "title": "Создай простое веб-приложение «Тестовый проект 3» с заголовком, описанием и кнопкой «Начать». Создай файлы в GitHub. Про",
       "description": "Создай простое веб-приложение «Тестовый проект 3» с заголовком, описанием и кнопкой «Начать». Создай файлы в GitHub. Проведи тестирование. Если найдёшь ошибку — исправь её. Заверши только после VERDICT: PASS.",
-      "status": "approved",
+      "status": "running",
       "plan": {
         "summary": "Create a simple web application \"Тестовый проект 3\" with a title, description and a \"Начать\" button, set up the project in a GitHub repository, perform testing, fix any discovered issues, and finalize with a VERDICT: PASS.",
         "agents": [
@@ -54,7 +54,7 @@
       "approved": true,
       "review_verdict": null,
       "created_at": "2026-10-04T19:51:43.673956+00:00",
-      "updated_at": "2026-10-04T19:52:16.442492+00:00"
+      "updated_at": "2026-10-04T19:52:18.313306+00:00"
     },
     {
       "id": "TASK-3034DAE007",
@@ -326,6 +326,12 @@
   "projects": [],
   "memory": [],
   "events": [
+    {
+      "id": "ef8beef33d",
+      "kind": "status",
+      "message": "TASK-293159BA77: выполнение запущено",
+      "created_at": "2026-10-04T19:52:18.313348+00:00"
+    },
     {
       "id": "453dba2c43",
       "kind": "approval",
