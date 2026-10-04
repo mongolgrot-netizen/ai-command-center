@@ -316,10 +316,10 @@ def local_agent_fallback(task_id, task, agent, round_no, previous):
             gh=github_execute_actions(actions,task_id)
             return "ЛОКАЛЬНЫЙ FALLBACK DEVELOPER: проект создан без AI API.\n\n[GITHUB EXECUTION]\n"+json.dumps(gh,ensure_ascii=False)
         return "ЛОКАЛЬНЫЙ FALLBACK: для этой задачи нужен AI API."
-    if role=="reviewer":
+    if "review" in role.lower():
         if "AUTOTEST PASS" in previous:
             return "ЛОКАЛЬНЫЙ FALLBACK REVIEWER: автоматическая проверка пройдена.\nVERDICT: PASS"
-        return "ЛОКАЛЬНЫЙ FALLBACK REVIEWER: автоматическая проверка не пройдена.\nVERDICT: FAIL"
+        return "ЛОКАЛЬНЫЙ FALLBACK REVIEWER: результат требует проверки.\nVERDICT: FAIL"
     if role=="debugger":
         return "ЛОКАЛЬНЫЙ FALLBACK DEBUGGER: исправление не требуется до результата автотеста."
     return "ЛОКАЛЬНЫЙ FALLBACK: AI API недоступен."
@@ -344,7 +344,7 @@ Debugger должен исправлять проблемы, найденные 
             return {"summary":"AI API временно недоступен. Использован локальный бесплатный планировщик.","agents":[{"role":r,"name":name,"instructions":d} for r,name,d in steps],
                     "steps":[d for _,_,d in steps],"risks":["AI API недоступен; для простых веб-задач используется локальный fallback."],"needs_approval":True,"ai_error":True,"fallback":True}
     steps=heuristic_plan(text)
-    return {"summary":"План создан локальным оркестратором без AI API.","agents":[{"role":r,"name":r.title(),"instructions":d} for r,d in steps],
+    return {"summary":"План создан локальным оркестратором без AI API.","agents":[{"role":r,"name":name,"instructions":d} for r,name,d in steps],
             "steps":[d for _,d in steps],"risks":["Внешние действия выполняются только после подключения соответствующего инструмента."],"needs_approval":True}
 
 def create_task_internal(text):
