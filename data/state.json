@@ -49,14 +49,25 @@
         ],
         "needs_approval": true
       },
-      "outputs": [],
+      "outputs": [
+        {
+          "agent": {
+            "role": "architect",
+            "name": "Alex",
+            "instructions": "Design the overall structure of the web app (HTML, CSS, optional JS), decide on folder layout, and draft a README with setup instructions."
+          },
+          "result": "**Design Overview**\n\n- **Folder layout**\n\n```\nprojects/\n└── test-project-3/\n    ├── index.html\n    ├── style.css\n    ├── app.js\n    └── README.md\n```\n\n- **index.html** – minimal HTML page with UTF‑8 charset, responsive meta tag, title *«Тестовый проект 3»*, a container that holds the heading, description and a button **«Начать»**. The page links to `style.css` and `app.js`.\n\n- **style.css** – simple, clean styling: centered container, pleasant font, spacing, and a styled button.\n\n- **app.js** – optional JavaScript that attaches a click‑handler to the button and shows an alert (`\"Кнопка наж",
+          "round": 1,
+          "created_at": "2026-10-04T20:23:54.657877+00:00"
+        }
+      ],
       "approved": true,
       "review_verdict": null,
       "created_at": "2026-10-04T20:08:25.262475+00:00",
       "updated_at": "2026-10-04T20:23:51.931365+00:00",
       "current_round": 1,
-      "current_agent": "Alex",
-      "current_role": "architect",
+      "current_agent": null,
+      "current_role": null,
       "execution_started_at": "2026-10-04T20:23:49.477242+00:00"
     },
     {
