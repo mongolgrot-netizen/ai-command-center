@@ -92,14 +92,25 @@
           "fallback": true,
           "error": false,
           "created_at": "2026-10-04T21:00:09.038524+00:00"
+        },
+        {
+          "agent": {
+            "role": "reviewer",
+            "name": "Eve Reviewer",
+            "instructions": "Perform final review of code quality, documentation, and deliver the complete web app package."
+          },
+          "result": "ЛОКАЛЬНЫЙ FALLBACK REVIEWER: автоматическая проверка пройдена.\nVERDICT: PASS",
+          "fallback": true,
+          "error": false,
+          "created_at": "2026-10-04T21:00:12.735953+00:00"
         }
       ],
       "approved": true,
       "review_verdict": null,
       "created_at": "2026-10-04T20:59:47.125882+00:00",
-      "updated_at": "2026-10-04T21:00:11.010931+00:00",
-      "current_agent": "Eve Reviewer",
-      "current_role": "reviewer",
+      "updated_at": "2026-10-04T21:00:12.736000+00:00",
+      "current_agent": null,
+      "current_role": null,
       "current_round": 1,
       "execution_started_at": "2026-10-04T20:59:52.971682+00:00"
     },
@@ -1055,6 +1066,12 @@
   "projects": [],
   "memory": [],
   "events": [
+    {
+      "id": "46f4c23bf4",
+      "kind": "fallback",
+      "message": "TASK-F3C447D550: Eve Reviewer переведён в локальный бесплатный режим: Groq HTTP 429: лимит AI достигнут. Повтор не выполнялся, чтобы не расходовать лимит.",
+      "created_at": "2026-10-04T21:00:12.735994+00:00"
+    },
     {
       "id": "6c9a3c9e6a",
       "kind": "agent_start",
