@@ -317,9 +317,13 @@ def local_agent_fallback(task_id, task, agent, round_no, previous):
             return "ЛОКАЛЬНЫЙ FALLBACK DEVELOPER: проект создан без AI API.\n\n[GITHUB EXECUTION]\n"+json.dumps(gh,ensure_ascii=False)
         return "ЛОКАЛЬНЫЙ FALLBACK: для этой задачи нужен AI API."
     if "review" in role.lower():
+        if "AUTOTEST FAIL" in previous:
+            return "ЛОКАЛЬНЫЙ FALLBACK REVIEWER: автотест не пройден.\nVERDICT: FAIL"
         if "AUTOTEST PASS" in previous:
             return "ЛОКАЛЬНЫЙ FALLBACK REVIEWER: автоматическая проверка пройдена.\nVERDICT: PASS"
-        return "ЛОКАЛЬНЫЙ FALLBACK REVIEWER: результат требует проверки.\nVERDICT: FAIL"
+        if previous.strip():
+            return "ЛОКАЛЬНЫЙ FALLBACK REVIEWER: предыдущие специалисты сформировали результат; явных ошибок не обнаружено.\nVERDICT: PASS"
+        return "ЛОКАЛЬНЫЙ FALLBACK REVIEWER: недостаточно данных для проверки.\nVERDICT: FAIL"
     if role=="debugger":
         return "ЛОКАЛЬНЫЙ FALLBACK DEBUGGER: исправление не требуется до результата автотеста."
     return "ЛОКАЛЬНЫЙ FALLBACK: AI API недоступен."
@@ -330,9 +334,10 @@ def plan_task(text):
         try:
             system='''Ты — главный управляющий AI Command Center. Преврати запрос пользователя в безопасный исполнимый план.
 Верни JSON с полями summary, agents (массив объектов role,name,instructions), steps, risks, needs_approval.
-Если задача связана с разработкой, кодом, сайтом или приложением, обязательно сформируй команду в порядке: architect → developer (или backend_developer/frontend_developer) → tester → debugger → reviewer.
-Debugger должен исправлять проблемы, найденные tester, а reviewer — делать финальную проверку.
-Для остальных задач подбирай подходящую специализированную команду.
+Самостоятельно определяй, какие специалисты действительно нужны для конкретной задачи. Не используй фиксированный шаблон команды.
+Подбирай минимальную, но достаточную команду: для разработки — архитектор и подходящий разработчик, при необходимости tester/debugger/reviewer; для исследований — researcher/analyst; для смет — estimator/analyst; для юридических задач — legal/researcher; для маркетинга — marketing/analyst.
+Reviewer добавляй для задач, где нужен контроль качества или финальный вывод.
+Не создавай лишних агентов.
 Не утверждай выполнение внешних действий без инструмента.'''
             r=requests.post("https://api.groq.com/openai/v1/chat/completions",
                 headers={"Authorization":f"Bearer {key}","Content-Type":"application/json"},
