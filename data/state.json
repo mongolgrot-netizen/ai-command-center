@@ -4,7 +4,7 @@
       "id": "TASK-C7B55422E4",
       "title": "Создай простое веб-приложение „Контрольный тест“. Заголовок „Контрольный тест“, короткое описание и кнопка „Начать“. Соз",
       "description": "Создай простое веб-приложение „Контрольный тест“. Заголовок „Контрольный тест“, короткое описание и кнопка „Начать“. Создай файлы в GitHub в папке проекта.»",
-      "status": "planned",
+      "status": "approved",
       "plan": {
         "summary": "Create a simple web application \"Контрольный тест\" with a header, short description, and a \"Начать\" button, and set up the project files in a GitHub repository.",
         "agents": [
@@ -57,10 +57,10 @@
         "needs_approval": true
       },
       "outputs": [],
-      "approved": false,
+      "approved": true,
       "review_verdict": null,
       "created_at": "2026-10-04T20:53:30.798706+00:00",
-      "updated_at": "2026-10-04T20:53:30.798723+00:00"
+      "updated_at": "2026-10-04T20:53:33.556096+00:00"
     },
     {
       "id": "TASK-014301E823",
@@ -848,6 +848,12 @@
   "projects": [],
   "memory": [],
   "events": [
+    {
+      "id": "f406bb2d8c",
+      "kind": "approval",
+      "message": "TASK-C7B55422E4: запуск подтверждён пользователем",
+      "created_at": "2026-10-04T20:53:33.556129+00:00"
+    },
     {
       "id": "b26f41e3be",
       "kind": "task",
