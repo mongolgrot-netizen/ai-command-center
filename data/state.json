@@ -1,6 +1,68 @@
 {
   "tasks": [
     {
+      "id": "TASK-C62FF787C3",
+      "title": "Проведи анализ того, как можно улучшить продвижение моих объявлений на Авито и составь пошаговый план.»",
+      "description": "Проведи анализ того, как можно улучшить продвижение моих объявлений на Авито и составь пошаговый план.»",
+      "status": "planned",
+      "plan": {
+        "summary": "Develop a comprehensive strategy to boost visibility and conversion of your Avito listings through market analysis, optimization of ad content, targeted promotion, and performance monitoring.",
+        "agents": [
+          {
+            "role": "marketing_strategist",
+            "name": "Strategist",
+            "instructions": "Conduct market research on Avito categories, competitor ads, and target audience preferences. Define key performance indicators (KPIs) and overall promotion strategy."
+          },
+          {
+            "role": "seo_specialist",
+            "name": "SEOExpert",
+            "instructions": "Identify high‑traffic keywords, optimize titles, descriptions, and tags for Avito's search algorithm. Recommend internal linking and category placement."
+          },
+          {
+            "role": "copywriter",
+            "name": "CopyWriter",
+            "instructions": "Create compelling ad copy, headlines, and calls‑to‑action based on the strategist's brief and SEO recommendations."
+          },
+          {
+            "role": "designer",
+            "name": "Designer",
+            "instructions": "Produce eye‑catching images, infographics, and layout suggestions that comply with Avito's image guidelines and enhance click‑through rates."
+          },
+          {
+            "role": "analyst",
+            "name": "DataAnalyst",
+            "instructions": "Set up tracking (e.g., UTM parameters, Avito analytics), monitor KPIs, and generate weekly performance reports with actionable insights."
+          }
+        ],
+        "steps": [
+          "1. Marketing strategist performs competitor analysis and defines target audience segments (2‑3 days).",
+          "2. Strategist outlines promotion goals (e.g., increase views by 30%, boost inquiries by 20%) and selects appropriate Avito promotion tools (paid boost, premium placement).",
+          "3. SEO specialist researches relevant keywords, creates a keyword list, and drafts optimization guidelines for titles, descriptions, and tags (1‑2 days).",
+          "4. Copywriter writes multiple headline and description variants incorporating the keyword list and persuasive language (1‑2 days).",
+          "5. Designer creates high‑quality photos, adds watermarks, and designs banner elements for premium listings (1‑2 days).",
+          "6. Strategist reviews copy and design, selects the best combinations, and schedules the ads according to peak traffic times (0.5 day).",
+          "7. Analyst implements tracking parameters, sets up Avito analytics dashboard, and defines reporting cadence (0.5 day).",
+          "8. Launch the optimized ads with selected promotion options (paid boost, premium placement).",
+          "9. Analyst monitors performance daily for the first week, compares against KPIs, and notes any underperforming elements.",
+          "10. If issues arise (low CTR, high bounce), copywriter and designer iterate on headlines/images; SEO specialist refines keywords.",
+          "11. After 2‑4 weeks, analyst compiles a performance report, highlights successes, and provides recommendations for scaling or adjusting budget.",
+          "12. Strategist reviews the final report and decides on next‑phase actions (e.g., expanding to additional categories, increasing ad spend)."
+        ],
+        "risks": [
+          "Non‑compliance with Avito's advertising policies could lead to ad rejection or account suspension.",
+          "Over‑reliance on paid promotion without organic optimization may waste budget.",
+          "Inaccurate keyword targeting could attract irrelevant traffic, lowering conversion rates.",
+          "Poor image quality or misleading copy may damage brand reputation."
+        ],
+        "needs_approval": false
+      },
+      "outputs": [],
+      "approved": false,
+      "review_verdict": null,
+      "created_at": "2026-10-04T21:07:56.307966+00:00",
+      "updated_at": "2026-10-04T21:07:56.307981+00:00"
+    },
+    {
       "id": "TASK-F3C447D550",
       "title": "Создай простое веб-приложение «Тест v1.1» с заголовком, описанием и кнопкой «Начать»",
       "description": "Создай простое веб-приложение «Тест v1.1» с заголовком, описанием и кнопкой «Начать»",
@@ -748,6 +810,51 @@
   ],
   "agents": [
     {
+      "id": "AGENT-0837282878",
+      "name": "DataAnalyst",
+      "role": "analyst",
+      "instructions": "Set up tracking (e.g., UTM parameters, Avito analytics), monitor KPIs, and generate weekly performance reports with actionable insights.",
+      "task_id": "TASK-C62FF787C3",
+      "status": "assigned",
+      "created_at": "2026-10-04T21:07:56.308024+00:00"
+    },
+    {
+      "id": "AGENT-A3394ADD87",
+      "name": "Designer",
+      "role": "designer",
+      "instructions": "Produce eye‑catching images, infographics, and layout suggestions that comply with Avito's image guidelines and enhance click‑through rates.",
+      "task_id": "TASK-C62FF787C3",
+      "status": "assigned",
+      "created_at": "2026-10-04T21:07:56.308020+00:00"
+    },
+    {
+      "id": "AGENT-16F9311C4E",
+      "name": "CopyWriter",
+      "role": "copywriter",
+      "instructions": "Create compelling ad copy, headlines, and calls‑to‑action based on the strategist's brief and SEO recommendations.",
+      "task_id": "TASK-C62FF787C3",
+      "status": "assigned",
+      "created_at": "2026-10-04T21:07:56.308015+00:00"
+    },
+    {
+      "id": "AGENT-7EE84528F5",
+      "name": "SEOExpert",
+      "role": "seo_specialist",
+      "instructions": "Identify high‑traffic keywords, optimize titles, descriptions, and tags for Avito's search algorithm. Recommend internal linking and category placement.",
+      "task_id": "TASK-C62FF787C3",
+      "status": "assigned",
+      "created_at": "2026-10-04T21:07:56.308010+00:00"
+    },
+    {
+      "id": "AGENT-F17819B833",
+      "name": "Strategist",
+      "role": "marketing_strategist",
+      "instructions": "Conduct market research on Avito categories, competitor ads, and target audience preferences. Define key performance indicators (KPIs) and overall promotion strategy.",
+      "task_id": "TASK-C62FF787C3",
+      "status": "assigned",
+      "created_at": "2026-10-04T21:07:56.308001+00:00"
+    },
+    {
       "id": "AGENT-158EC72123",
       "name": "Eve Reviewer",
       "role": "reviewer",
@@ -1089,6 +1196,12 @@
     }
   ],
   "events": [
+    {
+      "id": "483245dbac",
+      "kind": "task",
+      "message": "Создана задача TASK-C62FF787C3 и сформирована AI-команда",
+      "created_at": "2026-10-04T21:07:56.308037+00:00"
+    },
     {
       "id": "861e720ea9",
       "kind": "task",
