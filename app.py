@@ -72,7 +72,7 @@ def heuristic_plan(text):
     if any(x in t for x in ["авито","реклам","маркет","продвиж"]): return [("marketing","Разработать стратегию"),("analyst","Оценить варианты"),("reviewer","Проверить план")]
     return [("analyst","Разобрать задачу"),("architect","Сформировать план"),("reviewer","Проверить результат")]
 
-def call_groq(prompt, system="Ты специализированный агент внутри AI Command Center. Не выдумывай выполненные действия.", max_tokens=1200, retries=1):
+def call_groq(prompt, system="Ты специализированный агент внутри AI Command Center. Не выдумывай выполненные действия.", max_tokens=800, retries=3):
     key=os.getenv("GROQ_API_KEY")
     if not key: return None
     for attempt in range(retries):
@@ -93,7 +93,7 @@ def call_groq(prompt, system="Ты специализированный аген
             if status==429 and attempt < retries-1:
                 m=re.search(r"try again in ([0-9.]+)s", body, re.I)
                 wait=float(m.group(1)) if m else 5.0
-                time.sleep(min(max(wait+0.5,1.0),20.0))
+                time.sleep(min(max(wait+1.0,6.0),20.0))
                 continue
             return {"error":f"Groq HTTP {status or '?'}: {body or str(e)}"}
         except Exception as e:
@@ -294,9 +294,9 @@ def execute_task(task_id):
 Твоя роль: {role}
 Твоя инструкция: {a.get("instructions","")}
 Предыдущие результаты команды:
-{previous[-10000:]}
+{previous[-3000:]}
 Контекст текущего GitHub-проекта:
-{github_project_context()}
+{github_project_context()[:1800]}
 Работай по задаче. Нельзя утверждать, что файл изменён, commit сделан или код запущен, если это не подтверждено инструментом.
 КРИТИЧЕСКИ ВАЖНО для developer/coder/backend_developer/frontend_developer/debugger:
 если требуется изменить проект, ты ОБЯЗАН предложить полный JSON-блок в конце:
@@ -314,7 +314,7 @@ Reviewer обязан дать строку VERDICT: PASS или VERDICT: FAIL.
                 task["updated_at"]=now()
                 add_event(s,"agent_start",f"{task_id}: запущен {a.get('name',role)} ({role}), раунд {round_no}")
                 save_state(s)
-            result=call_groq(prompt, system=f"Ты {role}. Ты обязан дать практический результат, а не общий совет.", max_tokens=(1800 if role in ("developer","coder","backend_developer","frontend_developer","debugger") else 900))
+            result=call_groq(prompt, system=f"Ты {role}. Ты обязан дать практический результат, а не общий совет.", max_tokens=(1200 if role in ("developer","coder","backend_developer","frontend_developer","debugger") else 500))
             if isinstance(result,dict) and result.get("error"):
                 s=load_state(); task=next((x for x in s["tasks"] if x["id"]==task_id),None)
                 if task:
