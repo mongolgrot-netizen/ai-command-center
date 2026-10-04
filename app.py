@@ -174,7 +174,20 @@ def static_files(path): return send_from_directory(BASE,path)
 @app.get("/api/health")
 def health(): return jsonify({"ok":True,"service":"AI Command Center","time":now()})
 @app.get("/api/state")
-def state(): return jsonify(load_state())
+def state():
+    s=load_state()
+    # Самовосстановление: если все агенты задачи завершены, задача не может оставаться running.
+    changed=False
+    for task in s["tasks"]:
+        if task.get("status")=="running":
+            task_agents=[a for a in s["agents"] if a.get("task_id")==task.get("id")]
+            if task_agents and all(a.get("status")=="completed" for a in task_agents):
+                task["status"]="completed"
+                task["updated_at"]=now()
+                add_event(s,"status",f'{task["id"]}: статус автоматически синхронизирован → completed')
+                changed=True
+    if changed: save_state(s)
+    return jsonify(s)
 @app.post("/api/task")
 def create_task():
     text=(request.get_json(silent=True) or {}).get("text","").strip()
