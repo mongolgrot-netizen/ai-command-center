@@ -1,6 +1,61 @@
 {
   "tasks": [
     {
+      "id": "TASK-5848598EF4",
+      "title": "Создай простое веб-приложение «Тестовый проект 3» с заголовком, описанием и кнопкой «Начать». Создай файлы в GitHub. Про",
+      "description": "Создай простое веб-приложение «Тестовый проект 3» с заголовком, описанием и кнопкой «Начать». Создай файлы в GitHub. Проведи тестирование. Если найдёшь ошибку — исправь её. Заверши только после VERDICT: PASS.",
+      "status": "planned",
+      "plan": {
+        "summary": "Create a simple web application named “Тестовый проект 3” with a title, description, and a “Начать” button, store the source files in a new GitHub repository, run automated tests, fix any issues found, and deliver a final verdict of PASS.",
+        "agents": [
+          {
+            "role": "architect",
+            "name": "Alex",
+            "instructions": "Design the overall structure of the web app (HTML, CSS, optional JS), decide on folder layout, and draft a README with setup instructions."
+          },
+          {
+            "role": "developer",
+            "name": "Bela",
+            "instructions": "Implement the design: create index.html, style.css, and optional script.js. Initialize a Git repository, write a .gitignore, and push the code to a new GitHub repo (user must provide repo name and access token)."
+          },
+          {
+            "role": "tester",
+            "name": "Cara",
+            "instructions": "Write and run a simple test suite (e.g., using Cypress or Playwright) that checks the page loads, the title and description are visible, and the “Начать” button is clickable."
+          },
+          {
+            "role": "debugger",
+            "name": "Dmitri",
+            "instructions": "If the tester reports failures, locate the cause in the codebase, apply fixes, and re‑run the tests until they all pass."
+          },
+          {
+            "role": "reviewer",
+            "name": "Elena",
+            "instructions": "Perform a final review of the repository: verify code quality, test results, README completeness, and ensure the verdict can be safely declared as PASS."
+          }
+        ],
+        "steps": [
+          "Architect drafts the app layout and writes a README.",
+          "Developer creates the project files (index.html, style.css, script.js), initializes Git, and pushes to a new GitHub repository (user must supply repo name and token).",
+          "Tester creates automated tests and runs them against the live GitHub Pages (or local server) deployment.",
+          "If tests fail, Debugger fixes the issues and commits the changes.",
+          "Tester re‑runs the tests to confirm all pass.",
+          "Reviewer checks the final code, test logs, and documentation, then issues VERDICT: PASS."
+        ],
+        "risks": [
+          "Exposure of GitHub access token or credentials if not handled securely.",
+          "Potential bugs in HTML/CSS/JS that could cause test failures.",
+          "Incorrect test configuration leading to false PASS verdict."
+        ],
+        "needs_approval": true
+      },
+      "outputs": [],
+      "approved": false,
+      "review_verdict": null,
+      "created_at": "2026-10-04T20:08:25.262475+00:00",
+      "updated_at": "2026-10-04T20:08:25.262491+00:00"
+    },
+    {
       "id": "TASK-293159BA77",
       "title": "Создай простое веб-приложение «Тестовый проект 3» с заголовком, описанием и кнопкой «Начать». Создай файлы в GitHub. Про",
       "description": "Создай простое веб-приложение «Тестовый проект 3» с заголовком, описанием и кнопкой «Начать». Создай файлы в GitHub. Проведи тестирование. Если найдёшь ошибку — исправь её. Заверши только после VERDICT: PASS.",
@@ -234,6 +289,51 @@
   ],
   "agents": [
     {
+      "id": "AGENT-960038E024",
+      "name": "Elena",
+      "role": "reviewer",
+      "instructions": "Perform a final review of the repository: verify code quality, test results, README completeness, and ensure the verdict can be safely declared as PASS.",
+      "task_id": "TASK-5848598EF4",
+      "status": "assigned",
+      "created_at": "2026-10-04T20:08:25.262545+00:00"
+    },
+    {
+      "id": "AGENT-A89DAB7BB2",
+      "name": "Dmitri",
+      "role": "debugger",
+      "instructions": "If the tester reports failures, locate the cause in the codebase, apply fixes, and re‑run the tests until they all pass.",
+      "task_id": "TASK-5848598EF4",
+      "status": "assigned",
+      "created_at": "2026-10-04T20:08:25.262539+00:00"
+    },
+    {
+      "id": "AGENT-33BF653123",
+      "name": "Cara",
+      "role": "tester",
+      "instructions": "Write and run a simple test suite (e.g., using Cypress or Playwright) that checks the page loads, the title and description are visible, and the “Начать” button is clickable.",
+      "task_id": "TASK-5848598EF4",
+      "status": "assigned",
+      "created_at": "2026-10-04T20:08:25.262531+00:00"
+    },
+    {
+      "id": "AGENT-A6435FF1B6",
+      "name": "Bela",
+      "role": "developer",
+      "instructions": "Implement the design: create index.html, style.css, and optional script.js. Initialize a Git repository, write a .gitignore, and push the code to a new GitHub repo (user must provide repo name and access token).",
+      "task_id": "TASK-5848598EF4",
+      "status": "assigned",
+      "created_at": "2026-10-04T20:08:25.262524+00:00"
+    },
+    {
+      "id": "AGENT-EE6279E596",
+      "name": "Alex",
+      "role": "architect",
+      "instructions": "Design the overall structure of the web app (HTML, CSS, optional JS), decide on folder layout, and draft a README with setup instructions.",
+      "task_id": "TASK-5848598EF4",
+      "status": "assigned",
+      "created_at": "2026-10-04T20:08:25.262514+00:00"
+    },
+    {
       "id": "AGENT-608E9A2C99",
       "name": "Eve",
       "role": "reviewer",
@@ -372,6 +472,12 @@
   "projects": [],
   "memory": [],
   "events": [
+    {
+      "id": "b8da898bf8",
+      "kind": "task",
+      "message": "Создана задача TASK-5848598EF4 и сформирована AI-команда",
+      "created_at": "2026-10-04T20:08:25.262562+00:00"
+    },
     {
       "id": "364d029010",
       "kind": "error",
