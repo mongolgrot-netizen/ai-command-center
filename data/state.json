@@ -139,6 +139,16 @@
           "result": "{\n  \"actions\": [\n    {\n      \"action\": \"write_file\",\n      \"path\": \"projects/test-project-3/index.html\",\n      \"content\": \"<!doctype html>\\n<html lang=\\\"ru\\\">\\n<head>\\n  <meta charset=\\\"utf",
           "round": 1,
           "created_at": "2026-10-04T20:25:24.254839+00:00"
+        },
+        {
+          "agent": {
+            "role": "developer",
+            "name": "Bela",
+            "instructions": "Implement the design: create index.html, style.css, and optional script.js. Initialize a Git repository, write a .gitignore, and push the code to a new GitHub repo (user must provide repo name and access token)."
+          },
+          "result": "{\n  \"actions\": [\n    {\n      \"action\": \"write_file\",\n      \"path\": \"projects/test-project-3/index.html\",\n      \"content\": \"<!doctype html>\\n<html lang=\\\"ru\\\">\\n<head>\\n  <meta charset=\\\"utf-8\\\">\\n  <meta name=\\\"viewport\\\" content=\\\"width=device-width,initial-scale=1\\\">\\n  <title>Тестовый проект 3</title>\\n  <link rel=\\\"stylesheet\\\" href=\\\"style.css\\\">\\n</head>\\n<body>\\n  <div class=\\\"container\\\">\\n    <h1>Тестовый проект 3</h1>\\n    <p>Это простой веб‑приложение с заголовком, описанием и кнопкой «Начать».</p>\\n    <button id=\\\"startBtn\\\">Начать</button>\\n  </div>\\n  <script src=\\\"script.js\\\"></script>\\n</body>\\n</html>\"\n    },\n    {\n      \"action\": \"write_file\",\n      \"path\": \"projects/test-project-3/style.css\",\n      \"content\": \"body {\\n  margin: 0;\\n  font-family: system-ui, -apple-system, \\\"Segoe UI\\\", sans-serif;\\n  background: #f5f5f5;\\n  color: #333;\\n  display: flex;\\n  justify-content: center;\\n  align-items: center;\\n  height: 100vh;\\n}\\n\\n.container {\\n  text-align: center;\\n  background: #fff;\\n  padding: 2rem;\\n  border-radius: 8px;\\n  box-shadow: 0 4px 12px rgba(0,0,0,0.1);\\n}\\n\\nh1 {\\n  margin-bottom: 0.5rem;\\n  font-size: 2rem;\\n}\\n\\np {\\n  margin-bottom: 1.5rem;\\n  font-size: 1rem;\\n  color: #555;\\n}\\n\\nbutton {\\n  padding: 0.75rem 1.5rem;\\n  font-size: 1rem;\\n  background: #0069d9;\\n  color: #fff;\\n  border: none;\\n  border-radius: 4px;\\n  cursor: pointer;\\n}\\n\\nbutton:hover {\\n  background: #0053b3;\\n}\"\n    },\n    {\n      \"action\": \"write_file\",\n      \"path\": \"projects/test-project-3/script.js\",\n      \"content\": \"document.getElementById('startBtn').addEventListener('click', () => {\\n  alert('Кнопка «Начать» нажата!');\\n});\"\n    },\n    {\n      \"action\": \"write_file\",\n      \"path\": \"projects/test-project-3/.gitignore\",\n      \"content\": \"# Node modules\\nnode_modules/\\n\\n# Logs\\nnpm-debug.log*\\n\\n# OS files\\n.DS_Store\\nThumbs.db\\n\"\n    }\n  ]\n}\n\n[GITHUB EXECUTION]\n{\"executed\": 4, \"results\": [{\"path\": \"projects/test-project-3/index.html\", \"ok\": true, \"commit\": \"1906504c93eb1d4af013cd59657d65d9859bf660\"}, {\"path\": \"projects/test-project-3/style.css\", \"ok\": true, \"commit\": \"3efcc95e6c5e65a7d9bb0992f9f26b9d1ae3556d\"}, {\"path\": \"projects/test-project-3/script.js\", \"ok\": true, \"commit\": \"3498c03ee17e3af2b389b482edec31e32f0b904f\"}, {\"path\": \"projects/test-project-3/.gitignore\", \"ok\": true, \"commit\": \"69db356228347274b725aece8b897426498b2954\"}]}",
+          "round": 1,
+          "created_at": "2026-10-04T20:25:47.314602+00:00"
         }
       ],
       "approved": true,
@@ -146,8 +156,8 @@
       "created_at": "2026-10-04T20:08:25.262475+00:00",
       "updated_at": "2026-10-04T20:25:25.626641+00:00",
       "current_round": 1,
-      "current_agent": "Bela",
-      "current_role": "developer",
+      "current_agent": null,
+      "current_role": null,
       "execution_started_at": "2026-10-04T20:23:49.477242+00:00"
     },
     {
