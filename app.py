@@ -65,6 +65,33 @@ def save_state(s):
 def add_event(s,k,m):
     s["events"].insert(0,{"id":uuid.uuid4().hex[:10],"kind":k,"message":m,"created_at":now()}); s["events"]=s["events"][:200]
 
+def archive_task_agents(s, task_id):
+    count = 0
+    for a in s.get("agents", []):
+        if a.get("task_id") == task_id:
+            a["status"] = "archived"
+            a["archived_at"] = now()
+            count += 1
+    return count
+
+def register_project(s, task):
+    for p in s.get("projects", []):
+        if p.get("task_id") == task.get("id"):
+            p["status"] = task.get("status")
+            p["updated_at"] = now()
+            return
+    repo = os.getenv("GITHUB_REPO", "mongolgrot-netizen/ai-command-center")
+    s.setdefault("projects", []).insert(0, {
+        "id": "PROJECT-" + uuid.uuid4().hex[:10].upper(),
+        "task_id": task.get("id"),
+        "name": (task.get("title") or task.get("id"))[:120],
+        "path": "projects/" + str(task.get("id")),
+        "status": task.get("status"),
+        "created_at": task.get("created_at", now()),
+        "updated_at": now(),
+        "github_url": "https://github.com/" + repo + "/tree/main/projects/" + str(task.get("id"))
+    })
+
 def heuristic_plan(text):
     t=text.lower()
     if any(x in t for x in ["создай","разработ","приложен","сайт","программа","код"]): return [("architect","Спроектировать решение"),("developer","Разработать реализацию"),("tester","Проверить и протестировать")]
