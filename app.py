@@ -130,12 +130,14 @@ def github_project_context():
 
 def extract_github_actions(text):
     try:
-        m=re.search(r"```json\s*(\{.*\})\s*```",text,re.S)
+        m=re.search(r"\`\`\`json\s*(\{.*?\})\s*\`\`\`",text,re.S)
         raw=m.group(1) if m else text[text.find("{"):text.rfind("}")+1]
+        if not raw: return []
+        raw=re.sub(r"\\(?=[<>=/])","",raw)
         obj=json.loads(raw)
-        return obj.get("actions",[]) if isinstance(obj,dict) else []
-    except Exception: return []
-
+        return obj.get("actions",[]) if isinstance(obj,dict) and isinstance(obj.get("actions",[]),list) else []
+    except Exception:
+        return []
 def plan_task(text):
     key=os.getenv("GROQ_API_KEY")
     if key:
@@ -241,7 +243,7 @@ Tester должен проверять состояние GitHub после пр
 Reviewer обязан дать строку VERDICT: PASS или VERDICT: FAIL.
 Если FAIL — перечисли конкретные исправления для Debugger.
 """
-            result=call_groq(prompt, system=f"Ты {role}. Ты обязан дать практический результат, а не общий совет.", max_tokens=1000)
+            result=call_groq(prompt, system=f"Ты {role}. Ты обязан дать практический результат, а не общий совет.", max_tokens=(2600 if role in ("developer","coder","backend_developer","frontend_developer","debugger") else 1200))
             if isinstance(result,dict) and result.get("error"):
                 s=load_state(); task=next((x for x in s["tasks"] if x["id"]==task_id),None)
                 if task:
