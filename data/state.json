@@ -60,10 +60,10 @@
       "approved": true,
       "review_verdict": null,
       "created_at": "2026-10-04T20:53:30.798706+00:00",
-      "updated_at": "2026-10-04T20:53:35.079872+00:00",
-      "current_agent": null,
-      "current_role": null,
-      "current_round": 0,
+      "updated_at": "2026-10-04T20:53:37.671434+00:00",
+      "current_agent": "Project Architect",
+      "current_role": "architect",
+      "current_round": 1,
       "execution_started_at": "2026-10-04T20:53:35.079855+00:00"
     },
     {
@@ -852,6 +852,12 @@
   "projects": [],
   "memory": [],
   "events": [
+    {
+      "id": "2853e14897",
+      "kind": "agent_start",
+      "message": "TASK-C7B55422E4: запущен Project Architect (architect), раунд 1",
+      "created_at": "2026-10-04T20:53:37.671466+00:00"
+    },
     {
       "id": "219f4b5412",
       "kind": "status",
