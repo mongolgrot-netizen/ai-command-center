@@ -19,48 +19,46 @@ STATE_LOCK = threading.RLock()
 GITHUB_CONTEXT_CACHE = {"value": "", "at": 0.0}
 
 def load_state():
-    # На бесплатном Render локальный диск непостоянный. Если GitHub подключён,
-    # состояние Command Center хранится в репозитории и переживает перезапуски.
-    if github_configured():
-        data = github_get_file(STATE_REPO_PATH)
-        if data.get("content"):
+    global STATE_CACHE
+    with STATE_LOCK:
+        if STATE_CACHE is not None:
+            return copy.deepcopy(STATE_CACHE)
+        parsed = None
+        if github_configured():
             try:
-                import base64
-                raw = base64.b64decode(data["content"]).decode("utf-8")
-                parsed = json.loads(raw)
-                if isinstance(parsed, dict):
-                    return parsed
+                data = github_get_file(STATE_REPO_PATH)
+                if data.get("content"):
+                    import base64
+                    raw = base64.b64decode(data["content"]).decode("utf-8")
+                    candidate = json.loads(raw)
+                    if isinstance(candidate, dict):
+                        parsed = candidate
             except Exception:
                 pass
-    if STATE_FILE.exists():
-        try:
-            return json.loads(STATE_FILE.read_text(encoding="utf-8"))
-        except Exception:
-            pass
-    return json.loads(json.dumps(DEFAULT_STATE))
+        if parsed is None and STATE_FILE.exists():
+            try:
+                parsed = json.loads(STATE_FILE.read_text(encoding="utf-8"))
+            except Exception:
+                parsed = None
+        STATE_CACHE = parsed if isinstance(parsed, dict) else json.loads(json.dumps(DEFAULT_STATE))
+        return copy.deepcopy(STATE_CACHE)
 
 def save_state(s):
+    global STATE_CACHE
     payload = json.dumps(s, ensure_ascii=False, indent=2)
-    # GitHub — постоянное хранилище; локальный файл остаётся fallback.
-    try:
-        STATE_FILE.write_text(payload, encoding="utf-8")
-    except Exception:
-        pass
-    if github_configured():
+    with STATE_LOCK:
+        STATE_CACHE = copy.deepcopy(s)
         try:
-            existing = github_get_file(STATE_REPO_PATH)
-            sha = existing.get("sha")
-            out = github_write_file(
-                STATE_REPO_PATH,
-                payload,
-                "AI Command Center: persist state",
-                sha=sha
-            )
-            if out.get("error"):
-                # Не ломаем выполнение задачи из-за временной ошибки GitHub.
-                pass
+            STATE_FILE.write_text(payload, encoding="utf-8")
         except Exception:
             pass
+        if github_configured():
+            try:
+                existing = github_get_file(STATE_REPO_PATH)
+                sha = existing.get("sha")
+                github_write_file(STATE_REPO_PATH, payload, "AI Command Center: persist state", sha=sha)
+            except Exception:
+                pass
 
 def add_event(s,k,m):
     s["events"].insert(0,{"id":uuid.uuid4().hex[:10],"kind":k,"message":m,"created_at":now()}); s["events"]=s["events"][:200]
