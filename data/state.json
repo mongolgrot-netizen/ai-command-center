@@ -1,6 +1,61 @@
 {
   "tasks": [
     {
+      "id": "TASK-F3C447D550",
+      "title": "Создай простое веб-приложение «Тест v1.1» с заголовком, описанием и кнопкой «Начать»",
+      "description": "Создай простое веб-приложение «Тест v1.1» с заголовком, описанием и кнопкой «Начать»",
+      "status": "planned",
+      "plan": {
+        "summary": "Create a simple web app \"Test v1.1\" with a header, description, and a \"Start\" button.",
+        "agents": [
+          {
+            "role": "architect",
+            "name": "Alice Architect",
+            "instructions": "Design overall structure, choose tech stack (HTML, CSS, JavaScript), define layout with header, description, and button."
+          },
+          {
+            "role": "frontend_developer",
+            "name": "Bob Frontend",
+            "instructions": "Implement the UI according to the architect's design: create index.html, style.css, script.js. Add header, description, and a 'Start' button that shows an alert when clicked."
+          },
+          {
+            "role": "tester",
+            "name": "Carol Tester",
+            "instructions": "Test the web app in multiple browsers, verify that the header, description, and button appear correctly and that the button triggers the expected action."
+          },
+          {
+            "role": "debugger",
+            "name": "Dave Debugger",
+            "instructions": "Fix any bugs reported by the tester, ensure cross-browser compatibility and correct functionality."
+          },
+          {
+            "role": "reviewer",
+            "name": "Eve Reviewer",
+            "instructions": "Perform final review of code quality, documentation, and deliver the complete web app package."
+          }
+        ],
+        "steps": [
+          "Architect designs the app structure and UI mockup.",
+          "Frontend developer builds the HTML, CSS, and JavaScript files.",
+          "Tester runs functional and cross-browser tests.",
+          "Debugger resolves any issues found during testing.",
+          "Reviewer conducts final review and approves the deliverable."
+        ],
+        "risks": [
+          "Cross-browser rendering issues",
+          "Button click handler may not work in all environments",
+          "Missing responsive design",
+          "Potential naming conflicts in files"
+        ],
+        "needs_approval": true
+      },
+      "outputs": [],
+      "approved": false,
+      "review_verdict": null,
+      "created_at": "2026-10-04T20:59:47.125882+00:00",
+      "updated_at": "2026-10-04T20:59:47.125895+00:00"
+    },
+    {
       "id": "TASK-C7B55422E4",
       "title": "Создай простое веб-приложение „Контрольный тест“. Заголовок „Контрольный тест“, короткое описание и кнопка „Начать“. Соз",
       "description": "Создай простое веб-приложение „Контрольный тест“. Заголовок „Контрольный тест“, короткое описание и кнопка „Начать“. Создай файлы в GitHub в папке проекта.»",
@@ -634,6 +689,51 @@
   ],
   "agents": [
     {
+      "id": "AGENT-158EC72123",
+      "name": "Eve Reviewer",
+      "role": "reviewer",
+      "instructions": "Perform final review of code quality, documentation, and deliver the complete web app package.",
+      "task_id": "TASK-F3C447D550",
+      "status": "assigned",
+      "created_at": "2026-10-04T20:59:47.125939+00:00"
+    },
+    {
+      "id": "AGENT-2AA84F0F18",
+      "name": "Dave Debugger",
+      "role": "debugger",
+      "instructions": "Fix any bugs reported by the tester, ensure cross-browser compatibility and correct functionality.",
+      "task_id": "TASK-F3C447D550",
+      "status": "assigned",
+      "created_at": "2026-10-04T20:59:47.125934+00:00"
+    },
+    {
+      "id": "AGENT-45CBA88BF7",
+      "name": "Carol Tester",
+      "role": "tester",
+      "instructions": "Test the web app in multiple browsers, verify that the header, description, and button appear correctly and that the button triggers the expected action.",
+      "task_id": "TASK-F3C447D550",
+      "status": "assigned",
+      "created_at": "2026-10-04T20:59:47.125929+00:00"
+    },
+    {
+      "id": "AGENT-5F93FA243C",
+      "name": "Bob Frontend",
+      "role": "frontend_developer",
+      "instructions": "Implement the UI according to the architect's design: create index.html, style.css, script.js. Add header, description, and a 'Start' button that shows an alert when clicked.",
+      "task_id": "TASK-F3C447D550",
+      "status": "assigned",
+      "created_at": "2026-10-04T20:59:47.125922+00:00"
+    },
+    {
+      "id": "AGENT-F3A4D5110C",
+      "name": "Alice Architect",
+      "role": "architect",
+      "instructions": "Design overall structure, choose tech stack (HTML, CSS, JavaScript), define layout with header, description, and button.",
+      "task_id": "TASK-F3C447D550",
+      "status": "assigned",
+      "created_at": "2026-10-04T20:59:47.125914+00:00"
+    },
+    {
       "id": "AGENT-7655A45D07",
       "name": "Code Reviewer",
       "role": "reviewer",
@@ -907,6 +1007,12 @@
   "projects": [],
   "memory": [],
   "events": [
+    {
+      "id": "0e034a7664",
+      "kind": "task",
+      "message": "Создана задача TASK-F3C447D550 и сформирована AI-команда",
+      "created_at": "2026-10-04T20:59:47.125955+00:00"
+    },
     {
       "id": "b99dd37bca",
       "kind": "task",
