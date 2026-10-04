@@ -59,6 +59,68 @@ def call_groq(prompt, system="Ты специализированный аген
             return {"error":f"{type(e).__name__}: {str(e)}"}
     return {"error":"Groq: превышено число попыток"}
 
+
+GITHUB_API="https://api.github.com"
+
+def github_headers():
+    token=os.getenv("GITHUB_TOKEN","").strip()
+    return {"Authorization":f"Bearer {token}","Accept":"application/vnd.github+json","X-GitHub-Api-Version":"2022-11-28","Content-Type":"application/json"}
+
+def github_configured():
+    return bool(os.getenv("GITHUB_TOKEN","").strip() and os.getenv("GITHUB_REPO","").strip())
+
+def github_api(method,path,payload=None):
+    if not github_configured(): return {"error":"GitHub не подключён. Нужны GITHUB_TOKEN и GITHUB_REPO в Render."}
+    try:
+        r=requests.request(method,GITHUB_API+path,headers=github_headers(),json=payload,timeout=30)
+        data=r.json() if r.text else {}
+        if not r.ok: return {"error":f"GitHub HTTP {r.status_code}: {data.get('message',r.text[:500])}"}
+        return data
+    except Exception as e: return {"error":f"GitHub: {type(e).__name__}: {e}"}
+
+def github_get_file(path,ref=None):
+    repo=os.getenv("GITHUB_REPO","").strip()
+    q=f"?ref={requests.utils.quote(ref,safe='')}" if ref else ""
+    return github_api("GET",f"/repos/{repo}/contents/{path.lstrip('/')}"+q)
+
+def github_write_file(path,content,message,sha=None,branch=None):
+    repo=os.getenv("GITHUB_REPO","").strip()
+    import base64
+    payload={"message":message,"content":base64.b64encode(content.encode("utf-8")).decode("ascii")}
+    if sha: payload["sha"]=sha
+    if branch: payload["branch"]=branch
+    return github_api("PUT",f"/repos/{repo}/contents/{path.lstrip('/')}",payload)
+
+def github_execute_actions(actions,task_id):
+    if os.getenv("GITHUB_WRITE_ENABLED","").lower() not in ("1","true","yes"):
+        return {"executed":0,"skipped":len(actions),"reason":"GITHUB_WRITE_ENABLED не включён"}
+    results=[]
+    for action in actions[:10]:
+        if action.get("action") not in ("write_file","create_file","update_file"):
+            results.append({"action":action.get("action"),"ok":False,"error":"Недопустимое действие"}); continue
+        path=str(action.get("path","")).strip().lstrip("/")
+        file_content=action.get("content")
+        if not path or not isinstance(file_content,str):
+            results.append({"path":path,"ok":False,"error":"Нужны path и content"}); continue
+        if ".." in Path(path).parts or path.startswith(".git/"):
+            results.append({"path":path,"ok":False,"error":"Недопустимый путь"}); continue
+        existing=github_get_file(path)
+        if existing.get("error") and "HTTP 404" not in existing.get("error",""):
+            results.append({"path":path,"ok":False,"error":existing["error"]}); continue
+        sha=existing.get("sha")
+        out=github_write_file(path,file_content,f"AI Command Center: {task_id} — {action.get('action')}",sha=sha)
+        if out.get("error"): results.append({"path":path,"ok":False,"error":out["error"]})
+        else: results.append({"path":path,"ok":True,"commit":out.get("commit",{}).get("sha")})
+    return {"executed":sum(1 for x in results if x.get("ok")),"results":results}
+
+def extract_github_actions(text):
+    try:
+        m=re.search(r"```json\s*(\{.*?\})\s*```",text,re.S)
+        raw=m.group(1) if m else text[text.find("{"):text.rfind("}")+1]
+        obj=json.loads(raw)
+        return obj.get("actions",[]) if isinstance(obj,dict) else []
+    except Exception: return []
+
 def plan_task(text):
     key=os.getenv("GROQ_API_KEY")
     if key:
