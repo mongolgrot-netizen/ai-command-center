@@ -1,6 +1,68 @@
 {
   "tasks": [
     {
+      "id": "TASK-C7B55422E4",
+      "title": "Создай простое веб-приложение „Контрольный тест“. Заголовок „Контрольный тест“, короткое описание и кнопка „Начать“. Соз",
+      "description": "Создай простое веб-приложение „Контрольный тест“. Заголовок „Контрольный тест“, короткое описание и кнопка „Начать“. Создай файлы в GitHub в папке проекта.»",
+      "status": "planned",
+      "plan": {
+        "summary": "Create a simple web application \"Контрольный тест\" with a header, short description, and a \"Начать\" button, and set up the project files in a GitHub repository.",
+        "agents": [
+          {
+            "role": "architect",
+            "name": "Project Architect",
+            "instructions": "Define overall structure, choose tech stack (HTML/CSS/JS), design folder layout (index.html, style.css, script.js, README.md), decide repository name and initial README."
+          },
+          {
+            "role": "developer",
+            "name": "Frontend Developer",
+            "instructions": "Implement the HTML page with the required header, description, and button; add basic CSS styling; add JavaScript for button interaction; create README; commit and push all files to the GitHub repository."
+          },
+          {
+            "role": "tester",
+            "name": "QA Tester",
+            "instructions": "Clone the repository, open index.html in multiple browsers, verify that the header, description, and button appear correctly and that the button triggers the expected action."
+          },
+          {
+            "role": "debugger",
+            "name": "Bug Fixer",
+            "instructions": "Fix any UI or functionality issues reported by the tester, ensure all files are present and correctly referenced."
+          },
+          {
+            "role": "reviewer",
+            "name": "Code Reviewer",
+            "instructions": "Perform a final review of the code quality, repository structure, and documentation; approve the project for delivery."
+          }
+        ],
+        "steps": [
+          "Architect designs project structure and selects a repository name (e.g., control-test-app).",
+          "Architect prepares a brief README template and outlines folder layout: /index.html, /style.css, /script.js, /README.md.",
+          "Developer creates index.html containing <h1>Контрольный тест</h1>, a short <p> description, and a <button id=\"startBtn\">Начать</button>.",
+          "Developer adds style.css with minimal styling for layout and readability.",
+          "Developer adds script.js that attaches a click listener to #startBtn (e.g., alert('Тест начат')).",
+          "Developer writes README.md with project description and setup instructions.",
+          "Developer initializes a local git repo, adds all files, commits with message \"Initial commit\", and pushes to the target GitHub repository (user must provide repo URL and authentication token).",
+          "Tester clones the repo, opens index.html in Chrome, Firefox, and Edge, checks visual elements and button click behavior.",
+          "If tester finds issues, Debugger modifies the relevant files (HTML, CSS, or JS) and pushes fixes.",
+          "Reviewer inspects the final commit history, code style, and README completeness, then marks the project as approved.",
+          "Deliver final output: repository URL, confirmation of successful deployment, and any usage notes."
+        ],
+        "risks": [
+          "User may not have GitHub authentication token or proper permissions to create/push to the repository",
+          "Incorrect repository URL leading to push failures",
+          "Browser compatibility problems causing UI or button malfunction",
+          "Missing or misnamed files breaking the app",
+          "Exposure of sensitive credentials if token is embedded in scripts"
+        ],
+        "needs_approval": true
+      },
+      "outputs": [],
+      "approved": false,
+      "review_verdict": null,
+      "created_at": "2026-10-04T20:53:30.798706+00:00",
+      "updated_at": "2026-10-04T20:53:30.798723+00:00"
+    },
+    {
       "id": "TASK-014301E823",
       "title": "Создай простое веб-приложение «Контрольный тест». Заголовок «Контрольный тест», короткое описание и кнопка «Начать». Соз",
       "description": "Создай простое веб-приложение «Контрольный тест». Заголовок «Контрольный тест», короткое описание и кнопка «Начать». Создай файлы в GitHub в папке проекта.",
@@ -513,6 +575,51 @@
   ],
   "agents": [
     {
+      "id": "AGENT-7655A45D07",
+      "name": "Code Reviewer",
+      "role": "reviewer",
+      "instructions": "Perform a final review of the code quality, repository structure, and documentation; approve the project for delivery.",
+      "task_id": "TASK-C7B55422E4",
+      "status": "assigned",
+      "created_at": "2026-10-04T20:53:30.798774+00:00"
+    },
+    {
+      "id": "AGENT-C2F9D24346",
+      "name": "Bug Fixer",
+      "role": "debugger",
+      "instructions": "Fix any UI or functionality issues reported by the tester, ensure all files are present and correctly referenced.",
+      "task_id": "TASK-C7B55422E4",
+      "status": "assigned",
+      "created_at": "2026-10-04T20:53:30.798768+00:00"
+    },
+    {
+      "id": "AGENT-49898FAE52",
+      "name": "QA Tester",
+      "role": "tester",
+      "instructions": "Clone the repository, open index.html in multiple browsers, verify that the header, description, and button appear correctly and that the button triggers the expected action.",
+      "task_id": "TASK-C7B55422E4",
+      "status": "assigned",
+      "created_at": "2026-10-04T20:53:30.798761+00:00"
+    },
+    {
+      "id": "AGENT-BA50379C2C",
+      "name": "Frontend Developer",
+      "role": "developer",
+      "instructions": "Implement the HTML page with the required header, description, and button; add basic CSS styling; add JavaScript for button interaction; create README; commit and push all files to the GitHub repository.",
+      "task_id": "TASK-C7B55422E4",
+      "status": "assigned",
+      "created_at": "2026-10-04T20:53:30.798753+00:00"
+    },
+    {
+      "id": "AGENT-C171C00CCD",
+      "name": "Project Architect",
+      "role": "architect",
+      "instructions": "Define overall structure, choose tech stack (HTML/CSS/JS), design folder layout (index.html, style.css, script.js, README.md), decide repository name and initial README.",
+      "task_id": "TASK-C7B55422E4",
+      "status": "assigned",
+      "created_at": "2026-10-04T20:53:30.798743+00:00"
+    },
+    {
       "id": "AGENT-9A785C53B7",
       "name": "WebAppReviewer",
       "role": "reviewer",
@@ -741,6 +848,12 @@
   "projects": [],
   "memory": [],
   "events": [
+    {
+      "id": "b26f41e3be",
+      "kind": "task",
+      "message": "Создана задача TASK-C7B55422E4 и сформирована AI-команда",
+      "created_at": "2026-10-04T20:53:30.798800+00:00"
+    },
     {
       "id": "d915fc2fbe",
       "kind": "error",
