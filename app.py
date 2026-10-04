@@ -115,7 +115,7 @@ def github_execute_actions(actions,task_id):
 
 def extract_github_actions(text):
     try:
-        m=re.search(r"```json\s*(\{.*?\})\s*```",text,re.S)
+        m=re.search(r"```json\s*(\{.*\})\s*```",text,re.S)
         raw=m.group(1) if m else text[text.find("{"):text.rfind("}")+1]
         obj=json.loads(raw)
         return obj.get("actions",[]) if isinstance(obj,dict) else []
@@ -125,8 +125,12 @@ def plan_task(text):
     key=os.getenv("GROQ_API_KEY")
     if key:
         try:
-            system='''Ты — главный управляющий AI Command Center. Преврати запрос пользователя в безопасный план.
-Верни JSON с полями summary, agents (массив объектов role,name,instructions), steps, risks, needs_approval. Не утверждай выполнение внешних действий без инструмента.'''
+            system='''Ты — главный управляющий AI Command Center. Преврати запрос пользователя в безопасный исполнимый план.
+Верни JSON с полями summary, agents (массив объектов role,name,instructions), steps, risks, needs_approval.
+Если задача связана с разработкой, кодом, сайтом или приложением, обязательно сформируй команду в порядке: architect → developer (или backend_developer/frontend_developer) → tester → debugger → reviewer.
+Debugger должен исправлять проблемы, найденные tester, а reviewer — делать финальную проверку.
+Для остальных задач подбирай подходящую специализированную команду.
+Не утверждай выполнение внешних действий без инструмента.'''
             r=requests.post("https://api.groq.com/openai/v1/chat/completions",
                 headers={"Authorization":f"Bearer {key}","Content-Type":"application/json"},
                 json={"model":os.getenv("GROQ_MODEL","openai/gpt-oss-120b"),"temperature":0.2,"response_format":{"type":"json_object"},
@@ -195,7 +199,8 @@ def run_task(task_id):
 Предыдущие результаты команды:
 {previous[-12000:]}
 Выполни свою часть задачи интеллектуально. Не утверждай, что создавал файлы, запускал код, делал commit или выполнял внешние действия, если соответствующего инструмента нет.
-Отвечай кратко и конкретно, максимум около 1000 токенов. Не повторяй исходную задачу. Дай результат, который следующий агент сможет использовать. Если твоя роль developer/coder и задача требует изменения ПО, в конце верни JSON-блок вида {"actions":[{"action":"write_file","path":"index.html","content":"..."}]}. Используй только необходимые файлы. Это лишь предложение изменений: внешняя запись выполняется отдельным GitHub-инструментом."""
+Отвечай кратко и конкретно, максимум около 1000 токенов. Не повторяй исходную задачу. Дай результат, который следующий агент сможет использовать. Если твоя роль developer/coder/backend_developer/frontend_developer/debugger и задача требует изменения ПО, в конце верни JSON-блок вида {"actions":[{"action":"write_file","path":"index.html","content":"..."}]}. Используй только необходимые файлы. Это лишь предложение изменений: внешняя запись выполняется отдельным GitHub-инструментом.
+Если ты tester, проверяй фактическое состояние проекта и ищи ошибки, неполные места и несоответствия задаче. Если ты reviewer, дай финальный PASS/FAIL и перечисли оставшиеся проблемы."""
         result=call_groq(prompt, system=f"Ты {role} внутри многоагентной команды. Работаешь как реальный специалист, но не выдумываешь внешние действия.")
         if isinstance(result,dict) and result.get("error"):
             err=result["error"]
@@ -206,7 +211,7 @@ def run_task(task_id):
         out=result or "AI API не подключён."
 
         github_actions=[]
-        if role in ("developer","coder","backend_developer","frontend_developer") and isinstance(out,str):
+        if role in ("developer","coder","backend_developer","frontend_developer","debugger") and isinstance(out,str):
             github_actions=extract_github_actions(out)
             if github_actions:
                 gh=github_execute_actions(github_actions,task_id)
