@@ -317,7 +317,7 @@ def _execute_task_locked(task_id):
 КРИТИЧЕСКИ ВАЖНО для developer/coder/backend_developer/frontend_developer/debugger:
 GitHub уже подключён к AI Command Center. НИКОГДА не проси пользователя прислать GitHub token, создать репозиторий или выполнить git-команды вручную.
 Если требуется изменить проект, в конце ОБЯЗАТЕЛЬНО дай валидный JSON:
-{"actions":[{"action":"write_file","path":"projects/TASK-ID/index.html","content":"полное содержимое файла"}]}
+{{"actions":[{{"action":"write_file","path":"projects/TASK-ID/index.html","content":"полное содержимое файла"}}]}}
 Для нового пользовательского проекта используй каталог projects/TASK-ID/ и НЕ изменяй файлы самого AI Command Center в корне репозитория.
 Не утверждай, что изменения выполнены, пока это не подтверждено блоком [GITHUB EXECUTION].
 Используй существующий проект как основу и создавай только необходимые файлы.
