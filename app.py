@@ -438,4 +438,18 @@ def telegram_webhook():
     return jsonify({"ok":True})
 @app.errorhandler(Exception)
 def error(e): return jsonify({"error":"Внутренняя ошибка сервера","detail":str(e)}),500
+def recover_running_tasks():
+    # Render Free может перезапустить процесс и уничтожить daemon-потоки.
+    # При старте снова запускаем задачи, которые остались в состоянии running.
+    try:
+        s=load_state()
+        for task in s.get("tasks",[]):
+            if task.get("status")=="running":
+                threading.Thread(target=execute_task_safe,args=(task["id"],),daemon=True).start()
+    except Exception:
+        pass
+
+if os.getenv("DISABLE_AUTO_RECOVERY","").lower() not in ("1","true","yes"):
+    threading.Thread(target=recover_running_tasks,daemon=True).start()
+
 if __name__=="__main__":app.run(host="0.0.0.0",port=int(os.getenv("PORT","5000")))
