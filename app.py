@@ -183,7 +183,7 @@ def run_task(task_id):
     if not task:return jsonify({"error":"Задача не найдена"}),404
     if s["settings"].get("approval_required",True) and not task.get("approved",False):
         return jsonify({"error":"Требуется подтверждение запуска","task":task}),409
-    task["status"]="running"; task["outputs"]=[]; save_state(s)
+    task["status"]="running"; task["outputs"]=[]; add_event(s,"status",f"{task_id}: выполнение запущено"); save_state(s)
     previous=""
     agents=task["plan"].get("agents",[])
     for idx,a in enumerate(agents,1):
@@ -204,12 +204,30 @@ def run_task(task_id):
             add_event(s,"error",f"{task_id}: ошибка агента {a.get('name',role)} — {err[:500]}")
             save_state(s); return jsonify(task),502
         out=result or "AI API не подключён."
+
+        github_actions=[]
+        if role in ("developer","coder","backend_developer","frontend_developer") and isinstance(out,str):
+            github_actions=extract_github_actions(out)
+            if github_actions:
+                gh=github_execute_actions(github_actions,task_id)
+                out += "\n\n[GITHUB EXECUTION]\n" + json.dumps(gh,ensure_ascii=False)
+                add_event(s,"github",f"{task_id}: GitHub действий выполнено {gh.get('executed',0)}")
         task["outputs"].append({"agent":a,"result":out,"created_at":now()})
         previous += f"\n\n[{role}]\n{out}"
         agent_rec=next((x for x in s["agents"] if x.get("task_id")==task_id and x.get("role")==role and x.get("status") in ("assigned","running")),None)
         if agent_rec: agent_rec["status"]="completed"
         save_state(s)
     task["status"]="completed";task["updated_at"]=now();add_event(s,"task",f"{task_id}: команда завершила последовательное выполнение");save_state(s);return jsonify(task)
+
+@app.get("/api/github/status")
+def github_status():
+    configured=github_configured()
+    if not configured:
+        return jsonify({"connected":False,"write_enabled":False,"repo":os.getenv("GITHUB_REPO","")})
+    repo=os.getenv("GITHUB_REPO","").strip()
+    info=github_api("GET",f"/repos/{repo}")
+    return jsonify({"connected":"error" not in info,"write_enabled":os.getenv("GITHUB_WRITE_ENABLED","").lower() in ("1","true","yes"),"repo":repo,"name":info.get("full_name"),"private":info.get("private"),"error":info.get("error")})
+
 @app.post("/api/memory")
 def memory():
     content=(request.get_json(silent=True) or {}).get("content","").strip()
