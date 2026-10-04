@@ -113,6 +113,21 @@ def github_execute_actions(actions,task_id):
         else: results.append({"path":path,"ok":True,"commit":out.get("commit",{}).get("sha")})
     return {"executed":sum(1 for x in results if x.get("ok")),"results":results}
 
+def github_project_context():
+    if not github_configured():
+        return "GitHub-контекст недоступен."
+    parts=[]
+    for path in ("index.html","style.css","app.js","requirements.txt","README.md"):
+        data=github_get_file(path)
+        if data.get("content"):
+            import base64
+            try:
+                raw=base64.b64decode(data["content"]).decode("utf-8","replace")
+            except Exception:
+                raw=str(data.get("content",""))
+            parts.append(f"--- {path} ---\n{raw[:700]}")
+    return "\n".join(parts)[:3500] or "Файлы проекта не прочитаны."
+
 def extract_github_actions(text):
     try:
         m=re.search(r"```json\s*(\{.*\})\s*```",text,re.S)
