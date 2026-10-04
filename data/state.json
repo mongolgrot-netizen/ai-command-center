@@ -4,7 +4,7 @@
       "id": "TASK-5848598EF4",
       "title": "Создай простое веб-приложение «Тестовый проект 3» с заголовком, описанием и кнопкой «Начать». Создай файлы в GitHub. Про",
       "description": "Создай простое веб-приложение «Тестовый проект 3» с заголовком, описанием и кнопкой «Начать». Создай файлы в GitHub. Проведи тестирование. Если найдёшь ошибку — исправь её. Заверши только после VERDICT: PASS.",
-      "status": "cancelled",
+      "status": "running",
       "plan": {
         "summary": "Create a simple web application named “Тестовый проект 3” with a title, description, and a “Начать” button, store the source files in a new GitHub repository, run automated tests, fix any issues found, and deliver a final verdict of PASS.",
         "agents": [
@@ -274,11 +274,10 @@
       "approved": true,
       "review_verdict": null,
       "created_at": "2026-10-04T20:08:25.262475+00:00",
-      "updated_at": "2026-10-04T20:14:13.684Z",
+      "updated_at": "2026-10-04T20:14:17.961248+00:00",
       "current_round": 1,
-      "current_agent": null,
-      "current_role": null,
-      "execution_started_at": null
+      "current_agent": "Alex",
+      "current_role": "architect"
     },
     {
       "id": "TASK-293159BA77",
@@ -698,10 +697,10 @@
   "memory": [],
   "events": [
     {
-      "id": "stop-muu9ee9l",
-      "kind": "status",
-      "message": "Все зависшие/дублирующиеся running-задачи остановлены перед обновлением Controller",
-      "created_at": "2026-10-04T20:14:13.689Z"
+      "id": "2dd4d7afdd",
+      "kind": "agent_start",
+      "message": "TASK-5848598EF4: запущен Alex (architect), раунд 1",
+      "created_at": "2026-10-04T20:14:17.961344+00:00"
     },
     {
       "id": "96f3b10588",
