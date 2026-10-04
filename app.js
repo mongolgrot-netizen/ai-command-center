@@ -12,8 +12,29 @@ function showOutputs(t){
   const outs=t.outputs||[];
   $("result").innerHTML=`<div class="plan"><b>🤖 ${esc(t.status)} — ${esc(t.id)}</b>${outs.map((o,i)=>`<div class="item"><b>${i+1}. ${esc(o.agent?.name||o.agent?.role||"Agent")}</b><div class="muted">${esc(o.agent?.role||"")}</div><p>${esc(typeof o.result==="string"?o.result:JSON.stringify(o.result))}</p></div>`).join("")}</div>`;
 }
-async function refresh(){document.querySelectorAll(".approveBtn").forEach(b=>b.onclick=async()=>{b.disabled=true;b.textContent="⏳ Выполняю...";try{if(b.closest(".item")?.querySelector(".status")?.textContent==="planned"){await api(`/api/task/${b.dataset.id}/approve`,{method:"POST"});}const r=await api(`/api/task/${b.dataset.id}/run`,{method:"POST"});showOutputs(r);refresh()}catch(e){alert(e.message);b.disabled=false;b.textContent="▶ Запустить"}});try{const [s,h]=await Promise.all([api("/api/state"),api("/api/health")]);render(s);$("health").textContent="● онлайн";}catch(e){$("health").textContent="● ошибка"}}
-$("runBtn").onclick=async()=>{const text=$("taskInput").value.trim();if(!text)return alert("Введите задачу");$("runBtn").disabled=true;$("result").innerHTML='<div class="plan">🧠 Анализирую задачу...</div>';try{const t=await api("/api/task",{method:"POST",body:JSON.stringify({text})});const p=t.plan;$("result").innerHTML=`<div class="plan"><b>🧠 ${esc(p.summary)}</b><h3>Команда</h3>${p.agents.map(a=>`<span class="tag">${esc(a.name)} · ${esc(a.role)}</span>`).join("")}<h3>План</h3><ol>${p.steps.map(x=>`<li>${esc(x)}</li>`).join("")}</ol><div class="muted">Требует подтверждения: ${p.needs_approval?"да":"нет"}</div></div>`;refresh()}catch(e){$("result").innerHTML=`<div class="plan">❌ ${esc(e.message)}</div>`}finally{$("runBtn").disabled=false}};
+function bindApproveButtons(){
+  document.querySelectorAll(".approveBtn").forEach(b=>b.onclick=async()=>{
+    b.disabled=true;b.textContent="⏳ Выполняю...";
+    try{
+      const r=await api(`/api/task/${b.dataset.id}/approve`,{method:"POST"});
+      const result=await api(`/api/task/${b.dataset.id}/run`,{method:"POST"});
+      showOutputs(result);
+      await refresh();
+    }catch(e){
+      alert(e.message);
+      b.disabled=false;b.textContent="▶ Подтвердить и запустить";
+    }
+  });
+}
+async function refresh(){
+  try{
+    const [s,h]=await Promise.all([api("/api/state"),api("/api/health")]);
+    render(s);
+    bindApproveButtons();
+    $("health").textContent="● онлайн";
+  }catch(e){$("health").textContent="● ошибка"}
+}
+$("runBtn").onclick=async()=>{const text=$("taskInput").value.trim();if(!text)return alert("Введите задачу");$("runBtn").disabled=true;$("result").innerHTML='<div class="plan">🧠 Анализирую задачу...</div>';try{const t=await api("/api/task",{method:"POST",body:JSON.stringify({text})});const p=t.plan;$("result").innerHTML=`<div class="plan"><b>🧠 ${esc(p.summary)}</b><h3>Команда</h3>${p.agents.map(a=>`<span class="tag">${esc(a.name)} · ${esc(a.role)}</span>`).join("")}<h3>План</h3><ol>${p.steps.map(x=>`<li>${esc(x)}</li>`).join("")}</ol><div class="muted">Требует подтверждения: ${p.needs_approval?"да":"нет"}</div></div>`;await refresh()}catch(e){$("result").innerHTML=`<div class="plan">❌ ${esc(e.message)}</div>`}finally{$("runBtn").disabled=false}};
 $("clearBtn").onclick=()=>{$("taskInput").value="";$("result").innerHTML=""};
-$("memoryBtn").onclick=async()=>{const content=$("memoryInput").value.trim();if(!content)return;try{await api("/api/memory",{method:"POST",body:JSON.stringify({content})});$("memoryInput").value="";refresh()}catch(e){alert(e.message)}};
+$("memoryBtn").onclick=async()=>{const content=$("memoryInput").value.trim();if(!content)return;try{await api("/api/memory",{method:"POST",body:JSON.stringify({content})});$("memoryInput").value="";await refresh()}catch(e){alert(e.message)}};
 refresh();setInterval(refresh,15000);
