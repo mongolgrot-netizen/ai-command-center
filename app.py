@@ -94,12 +94,44 @@ def register_project(s, task):
 
 def heuristic_plan(text):
     t=text.lower()
-    if any(x in t for x in ["создай","разработ","приложен","сайт","программа","код"]): return [("architect","Спроектировать решение"),("developer","Разработать реализацию"),("tester","Проверить и протестировать")]
-    if any(x in t for x in ["исслед","найди","анализ","конкурент","рынок","osint"]): return [("researcher","Исследовать открытые источники"),("analyst","Проанализировать результаты"),("reviewer","Проверить выводы")]
-    if any(x in t for x in ["смет","цена","стоимость","расчет"]): return [("estimator","Разобрать исходные данные"),("analyst","Проверить расчёт"),("reviewer","Провести контроль")]
-    if any(x in t for x in ["юрист","договор","суд","полици","претензи"]): return [("legal","Проанализировать юридическую задачу"),("researcher","Проверить нормативную базу"),("reviewer","Проверить результат")]
-    if any(x in t for x in ["авито","реклам","маркет","продвиж"]): return [("marketing","Разработать стратегию"),("analyst","Оценить варианты"),("reviewer","Проверить план")]
-    return [("analyst","Разобрать задачу"),("architect","Сформировать план"),("reviewer","Проверить результат")]
+    is_dev=any(x in t for x in ["создай","разработ","приложен","сайт","программа","код","веб","web","бот","api"])
+    is_research=any(x in t for x in ["исслед","найди","анализ","конкурент","рынок","osint","проверь"])
+    is_estimate=any(x in t for x in ["смет","цена","стоимость","расчет","расчёт","прайс"])
+    is_legal=any(x in t for x in ["юрист","договор","суд","полици","претензи","закон","право"])
+    is_marketing=any(x in t for x in ["авито","реклам","маркет","продвиж","продаж"])
+    roles=[]
+    if is_dev:
+        roles.append(("architect","Project Architect","Спроектировать решение и структуру проекта"))
+        if any(x in t for x in ["frontend","интерфейс","страниц","дизайн","сайт","веб","web"]):
+            roles.append(("frontend_developer","Frontend Developer","Создать или изменить пользовательский интерфейс"))
+        elif any(x in t for x in ["backend","сервер","api","бот","telegram","телеграм"]):
+            roles.append(("backend_developer","Backend Developer","Создать или изменить серверную часть и API"))
+        else:
+            roles.append(("developer","Developer","Реализовать основную функциональность проекта"))
+        roles.append(("tester","QA Tester","Проверить результат и ключевые требования"))
+        roles.append(("debugger","Bug Fixer","Исправить проблемы, найденные при проверке"))
+        roles.append(("reviewer","Code Reviewer","Провести финальную проверку и дать PASS/FAIL"))
+    elif is_research:
+        roles=[("researcher","Researcher","Собрать и проверить открытые источники"),
+               ("analyst","Analyst","Систематизировать факты, связи и противоречия"),
+               ("reviewer","Research Reviewer","Проверить выводы и источники")]
+    elif is_estimate:
+        roles=[("estimator","Estimator","Разобрать объём работ и применить прайс"),
+               ("analyst","Cost Analyst","Проверить расчёт, единицы и итог"),
+               ("reviewer","Estimate Reviewer","Проверить готовую смету")]
+    elif is_legal:
+        roles=[("legal","Legal Analyst","Проанализировать юридическую задачу"),
+               ("researcher","Legal Researcher","Проверить применимые нормы и факты"),
+               ("reviewer","Legal Reviewer","Проверить выводы и формулировки")]
+    elif is_marketing:
+        roles=[("marketing","Marketing Strategist","Разработать стратегию продвижения"),
+               ("analyst","Marketing Analyst","Оценить варианты и приоритеты"),
+               ("reviewer","Marketing Reviewer","Проверить стратегию")]
+    else:
+        roles=[("analyst","Task Analyst","Разобрать задачу и выделить требования"),
+               ("architect","Solution Architect","Сформировать решение"),
+               ("reviewer","Task Reviewer","Проверить результат")]
+    return [(role,name,instructions) for role,name,instructions in roles]
 
 def call_groq(prompt, system="Ты специализированный агент внутри AI Command Center. Не выдумывай выполненные действия.", max_tokens=800, retries=1):
     key=os.getenv("GROQ_API_KEY")
@@ -309,8 +341,8 @@ Debugger должен исправлять проблемы, найденные 
             r.raise_for_status(); return json.loads(r.json()["choices"][0]["message"]["content"])
         except Exception as e:
             steps=heuristic_plan(text)
-            return {"summary":"AI API временно недоступен. Использован локальный бесплатный планировщик.","agents":[{"role":r,"name":r.title(),"instructions":d} for r,d in steps],
-                    "steps":[d for _,d in steps],"risks":["AI API недоступен; для простых веб-задач используется локальный fallback."],"needs_approval":True,"ai_error":True,"fallback":True}
+            return {"summary":"AI API временно недоступен. Использован локальный бесплатный планировщик.","agents":[{"role":r,"name":name,"instructions":d} for r,name,d in steps],
+                    "steps":[d for _,_,d in steps],"risks":["AI API недоступен; для простых веб-задач используется локальный fallback."],"needs_approval":True,"ai_error":True,"fallback":True}
     steps=heuristic_plan(text)
     return {"summary":"План создан локальным оркестратором без AI API.","agents":[{"role":r,"name":r.title(),"instructions":d} for r,d in steps],
             "steps":[d for _,d in steps],"risks":["Внешние действия выполняются только после подключения соответствующего инструмента."],"needs_approval":True}
@@ -380,9 +412,9 @@ def _execute_task_locked(task_id):
         if round_no==1:
             run_agents=agents
         else:
-            run_agents=[a for a in agents if a.get("role") in ("debugger","tester","reviewer")]
+            run_agents=[a for a in agents if a.get("role") in ("debugger","tester","reviewer") or "review" in a.get("role","").lower() or "test" in a.get("role","").lower()]
         for idx,a in enumerate(run_agents,1):
-            if a.get("role")=="tester":
+            if a.get("role")=="tester" or "test" in a.get("role","").lower():
                 project_path=f"projects/{task_id}"
                 data=github_get_file(f"{project_path}/index.html")
                 passed=False
@@ -431,7 +463,7 @@ Reviewer обязан дать строку VERDICT: PASS или VERDICT: FAIL.
                 task["updated_at"]=now()
                 add_event(s,"agent_start",f"{task_id}: запущен {a.get('name',role)} ({role}), раунд {round_no}")
                 save_state(s)
-            result=call_groq(prompt, system=f"Ты {role}. Ты обязан дать практический результат, а не общий совет.", max_tokens=(1200 if role in ("developer","coder","backend_developer","frontend_developer","debugger") else 500))
+            result=call_groq(prompt, system=f"Ты {role}. Ты обязан дать практический результат, а не общий совет.", max_tokens=(1200 if role in ("developer","coder","backend_developer","frontend_developer","debugger") or "developer" in role or "debug" in role else 500))
             if isinstance(result,dict) and result.get("error"):
                 err=result["error"]
                 out=local_agent_fallback(task_id, task, a, round_no, previous)
@@ -442,7 +474,7 @@ Reviewer обязан дать строку VERDICT: PASS или VERDICT: FAIL.
                     task["current_agent"]=None; task["current_role"]=None; task["updated_at"]=now(); save_state(s)
                 continue
             out=result or "AI API не подключён."
-            if role in ("developer","coder","backend_developer","frontend_developer","debugger") and isinstance(out,str):
+            if (role in ("developer","coder","backend_developer","frontend_developer","debugger") or "developer" in role or "debug" in role) and isinstance(out,str):
                 actions=extract_github_actions(out)
                 if actions:
                     gh=github_execute_actions(actions,task_id)
