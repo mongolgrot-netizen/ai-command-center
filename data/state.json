@@ -1,6 +1,64 @@
 {
   "tasks": [
     {
+      "id": "TASK-3034DAE007",
+      "title": "Создай простое веб-приложение «Тестовый проект 2». Нужна современная главная страница, заголовок «Тестовый проект 2», кр",
+      "description": "Создай простое веб-приложение «Тестовый проект 2». Нужна современная главная страница, заголовок «Тестовый проект 2», краткое описание и красивая кнопка «Начать». Создай все необходимые файлы проекта в GitHub. После разработки обязательно протестируй проект. Если тест обнаружит ошибку — исправь её и повтори тест. Заверши только после VERDICT: PASS.",
+      "status": "planned",
+      "plan": {
+        "summary": "Create a simple modern web application \"Тестовый проект 2\" with a homepage containing a title, description, and a styled \"Начать\" button, host the code in a new GitHub repository, test the UI, fix any issues, and finalize after a PASS verdict.",
+        "agents": [
+          {
+            "role": "architect",
+            "name": "Alex",
+            "instructions": "Design the project structure, UI mockup, and choose tech stack (HTML5, CSS3, optional lightweight JS). Define repository layout and testing approach."
+          },
+          {
+            "role": "frontend_developer",
+            "name": "Sam",
+            "instructions": "Create the GitHub repository, implement index.html, style.css, script.js according to the design, write README, and push all files."
+          },
+          {
+            "role": "tester",
+            "name": "Taylor",
+            "instructions": "Clone the repository, run automated UI tests (e.g., Cypress) to verify the title, description, and button are present and functional."
+          },
+          {
+            "role": "debugger",
+            "name": "Jordan",
+            "instructions": "Analyze test failures, modify code to fix UI or functionality issues, and ensure tests pass."
+          },
+          {
+            "role": "reviewer",
+            "name": "Morgan",
+            "instructions": "Perform final code review for quality, accessibility, security, and confirm that all tests pass before marking the project complete."
+          }
+        ],
+        "steps": [
+          "Architect designs UI mockup and defines repo structure",
+          "Frontend developer creates GitHub repo \"test-project-2\" and adds project files (index.html, style.css, script.js, README.md)",
+          "Frontend developer pushes initial commit to GitHub",
+          "Tester clones repo and runs automated UI tests",
+          "If tests fail, debugger fixes code and pushes updates",
+          "Tester re-runs tests; repeat debug step until all tests pass",
+          "Reviewer conducts final code review and confirms PASS verdict",
+          "Document final status with VERDICT: PASS"
+        ],
+        "risks": [
+          "Accidental exposure of GitHub credentials or tokens",
+          "Repository may be public unintentionally, leaking code",
+          "Automated tests may be flaky across browsers",
+          "Design may not meet accessibility standards"
+        ],
+        "needs_approval": true
+      },
+      "outputs": [],
+      "approved": false,
+      "review_verdict": null,
+      "created_at": "2026-10-04T19:45:51.581381+00:00",
+      "updated_at": "2026-10-04T19:45:51.581395+00:00"
+    },
+    {
       "id": "TASK-7A46F2C6B3",
       "title": "Проверка сохранения состояния",
       "description": "Проверка сохранения состояния",
@@ -53,6 +111,51 @@
   ],
   "agents": [
     {
+      "id": "AGENT-38F92F541E",
+      "name": "Morgan",
+      "role": "reviewer",
+      "instructions": "Perform final code review for quality, accessibility, security, and confirm that all tests pass before marking the project complete.",
+      "task_id": "TASK-3034DAE007",
+      "status": "assigned",
+      "created_at": "2026-10-04T19:45:51.581447+00:00"
+    },
+    {
+      "id": "AGENT-97C928867B",
+      "name": "Jordan",
+      "role": "debugger",
+      "instructions": "Analyze test failures, modify code to fix UI or functionality issues, and ensure tests pass.",
+      "task_id": "TASK-3034DAE007",
+      "status": "assigned",
+      "created_at": "2026-10-04T19:45:51.581440+00:00"
+    },
+    {
+      "id": "AGENT-03AAB6A2E1",
+      "name": "Taylor",
+      "role": "tester",
+      "instructions": "Clone the repository, run automated UI tests (e.g., Cypress) to verify the title, description, and button are present and functional.",
+      "task_id": "TASK-3034DAE007",
+      "status": "assigned",
+      "created_at": "2026-10-04T19:45:51.581433+00:00"
+    },
+    {
+      "id": "AGENT-A7EC271929",
+      "name": "Sam",
+      "role": "frontend_developer",
+      "instructions": "Create the GitHub repository, implement index.html, style.css, script.js according to the design, write README, and push all files.",
+      "task_id": "TASK-3034DAE007",
+      "status": "assigned",
+      "created_at": "2026-10-04T19:45:51.581425+00:00"
+    },
+    {
+      "id": "AGENT-EC30721A4C",
+      "name": "Alex",
+      "role": "architect",
+      "instructions": "Design the project structure, UI mockup, and choose tech stack (HTML5, CSS3, optional lightweight JS). Define repository layout and testing approach.",
+      "task_id": "TASK-3034DAE007",
+      "status": "assigned",
+      "created_at": "2026-10-04T19:45:51.581415+00:00"
+    },
+    {
       "id": "AGENT-2C24FD7FDB",
       "name": "StatePersistReviewer",
       "role": "reviewer",
@@ -101,6 +204,12 @@
   "projects": [],
   "memory": [],
   "events": [
+    {
+      "id": "41af15cc53",
+      "kind": "task",
+      "message": "Создана задача TASK-3034DAE007 и сформирована AI-команда",
+      "created_at": "2026-10-04T19:45:51.581464+00:00"
+    },
     {
       "id": "695f2c3067",
       "kind": "task",
