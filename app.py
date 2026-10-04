@@ -78,7 +78,7 @@ def call_groq(prompt, system="Ты специализированный аген
                 headers={"Authorization":f"Bearer {key}","Content-Type":"application/json"},
                 json={"model":os.getenv("GROQ_MODEL","openai/gpt-oss-120b"),"temperature":0.2,
                       "max_tokens":max_tokens,
-                      "messages":[{"role":"system","content":system},{"role":"user","content":prompt}]},timeout=60)
+                      "messages":[{"role":"system","content":system},{"role":"user","content":prompt}]},timeout=35)
             r.raise_for_status()
             data=r.json()
             return data["choices"][0]["message"]["content"]
@@ -351,6 +351,28 @@ Reviewer обязан дать строку VERDICT: PASS или VERDICT: FAIL.
             add_event(s,"task",f"{task_id}: Reviewer не подтвердил PASS после {max_rounds} раундов"); save_state(s)
         return
 
+def execute_task_safe(task_id):
+    """Надёжная оболочка фонового исполнителя: исключения не оставляют задачу вечной running."""
+    try:
+        execute_task(task_id)
+    except Exception as e:
+        try:
+            s=load_state()
+            task=next((x for x in s.get("tasks",[]) if x.get("id")==task_id),None)
+            if task:
+                task["status"]="failed"
+                task["review_verdict"]="FAIL"
+                task["updated_at"]=now()
+                task.setdefault("outputs",[]).append({
+                    "agent":{"name":"Controller","role":"controller"},
+                    "result":f"Внутренняя ошибка Controller: {type(e).__name__}: {e}",
+                    "error":True,"created_at":now()
+                })
+                add_event(s,"error",f"{task_id}: Controller аварийно завершил выполнение — {type(e).__name__}: {e}")
+                save_state(s)
+        except Exception:
+            pass
+
 @app.post("/api/task/<task_id>/run")
 def run_task(task_id):
     s=load_state(); task=next((x for x in s["tasks"] if x["id"]==task_id),None)
@@ -359,7 +381,7 @@ def run_task(task_id):
         return jsonify({"error":"Требуется подтверждение запуска","task":task}),409
     task["status"]="running"; task["outputs"]=[]; task["updated_at"]=now()
     add_event(s,"status",f"{task_id}: выполнение запущено"); save_state(s)
-    threading.Thread(target=execute_task,args=(task_id,),daemon=True).start()
+    threading.Thread(target=execute_task_safe,args=(task_id,),daemon=True).start()
     return jsonify(task),202
 
 @app.get("/api/github/status")
