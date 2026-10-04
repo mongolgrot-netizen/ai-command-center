@@ -69,7 +69,7 @@ def heuristic_plan(text):
     if any(x in t for x in ["авито","реклам","маркет","продвиж"]): return [("marketing","Разработать стратегию"),("analyst","Оценить варианты"),("reviewer","Проверить план")]
     return [("analyst","Разобрать задачу"),("architect","Сформировать план"),("reviewer","Проверить результат")]
 
-def call_groq(prompt, system="Ты специализированный агент внутри AI Command Center. Не выдумывай выполненные действия.", max_tokens=1200, retries=3):
+def call_groq(prompt, system="Ты специализированный агент внутри AI Command Center. Не выдумывай выполненные действия.", max_tokens=1200, retries=1):
     key=os.getenv("GROQ_API_KEY")
     if not key: return None
     for attempt in range(retries):
@@ -78,7 +78,7 @@ def call_groq(prompt, system="Ты специализированный аген
                 headers={"Authorization":f"Bearer {key}","Content-Type":"application/json"},
                 json={"model":os.getenv("GROQ_MODEL","openai/gpt-oss-120b"),"temperature":0.2,
                       "max_tokens":max_tokens,
-                      "messages":[{"role":"system","content":system},{"role":"user","content":prompt}]},timeout=35)
+                      "messages":[{"role":"system","content":system},{"role":"user","content":prompt}]},timeout=45)
             r.raise_for_status()
             data=r.json()
             return data["choices"][0]["message"]["content"]
@@ -297,7 +297,15 @@ Tester должен проверять состояние GitHub после пр
 Reviewer обязан дать строку VERDICT: PASS или VERDICT: FAIL.
 Если FAIL — перечисли конкретные исправления для Debugger.
 """
-            result=call_groq(prompt, system=f"Ты {role}. Ты обязан дать практический результат, а не общий совет.", max_tokens=(2600 if role in ("developer","coder","backend_developer","frontend_developer","debugger") else 1200))
+            s=load_state(); task=next((x for x in s["tasks"] if x["id"]==task_id),None)
+            if task:
+                task["current_round"]=round_no
+                task["current_agent"]=a.get("name",role)
+                task["current_role"]=role
+                task["updated_at"]=now()
+                add_event(s,"agent_start",f"{task_id}: запущен {a.get('name',role)} ({role}), раунд {round_no}")
+                save_state(s)
+            result=call_groq(prompt, system=f"Ты {role}. Ты обязан дать практический результат, а не общий совет.", max_tokens=(1800 if role in ("developer","coder","backend_developer","frontend_developer","debugger") else 900))
             if isinstance(result,dict) and result.get("error"):
                 s=load_state(); task=next((x for x in s["tasks"] if x["id"]==task_id),None)
                 if task:
@@ -317,6 +325,8 @@ Reviewer обязан дать строку VERDICT: PASS или VERDICT: FAIL.
             s=load_state(); task=next((x for x in s["tasks"] if x["id"]==task_id),None)
             if not task: return
             task["outputs"].append({"agent":a,"result":out,"round":round_no,"created_at":now()})
+            task["current_agent"]=None
+            task["current_role"]=None
             previous += f"\n\n[round {round_no} {role}]\n{out}"
             agent_rec=next((x for x in s["agents"] if x.get("task_id")==task_id and x.get("role")==role),None)
             if agent_rec: agent_rec["status"]="completed"
