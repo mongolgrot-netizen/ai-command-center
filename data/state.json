@@ -52,7 +52,18 @@
         ],
         "needs_approval": true
       },
-      "outputs": [],
+      "outputs": [
+        {
+          "agent": {
+            "role": "architect",
+            "name": "Alex",
+            "instructions": "Design the project structure, UI mockup, and choose tech stack (HTML5, CSS3, optional lightweight JS). Define repository layout and testing approach."
+          },
+          "result": "**Project Name:** Тестовый проект 2  \n\n**Goal:** Create a minimal, modern single‑page web‑app that shows a clean landing page with the title **«Тестовый проект 2»**, a short description and a visually appealing **«Начать»** button. The repository must contain all source files, a simple test suite that validates the page renders correctly, and a CI workflow that runs the tests and reports **VERDICT: PASS** only when everything succeeds.\n\n---\n\n## 1. Tech‑stack (keep it lightweight)\n\n| Layer | Technology | Reason |\n|-------|------------|--------|\n| **HTML** | HTML5 (<!doctype html>) | Semantic markup, native browser support |\n| **CSS** | CSS3 (custom stylesheet + optional CSS reset) | No external framework – keeps bundle size < 5 KB |\n| **JS** | Vanilla ES2023 (module) – only for the “Start” button click handler | No build step, works in all modern browsers |\n| **Testing** | **Playwright** (node) – headless Chromium | Fast, reliable UI validation (checks title, description, button visibility & click) |\n| **CI** | GitHub Actions (ubuntu‑latest) – `npm ci` → `npm test` | Fully automated, fails on any regression |\n| **Package manager** | npm (package‑json) – only dev‑dependencies (playwright, @playwright/test) | Standard, no extra tooling required |\n\n---\n\n## 2. Repository layout\n\n```\ntest-project-2/\n│\n├─ .github/\n│   └─ workflows/\n│        └─ ci.yml                # GitHub Actions CI pipeline\n│\n├─ src/\n│   ├─ index.html                # Landing page\n│   ├─ style.css                 # All visual styling\n│   └─ main.js                   # Small script for the button\n│\n├─ tests/\n│   └─ landing.test.js           # Playwright test suite\n│\n├─ .gitignore\n├─ package.json\n└─ README.md\n```\n\n*All files are UTF‑8, LF line endings.*\n\n---\n\n## 3. UI mock‑up (textual description)\n\n```\n+-----------------------------------------------------------+\n|                         HEADER                            |\n|  -------------------------------------------------------  |\n|  |  Тестовый проект 2                                   | |\n|  |  Краткое описание проекта: «Простая стартовая страница»| |\n|  -------------------------------------------------------  |\n|                                                           |\n|  +-----------------------------------------------------+  |\n|  |                     HERO SECTION                    |  |\n|  |  -------------------------------------------------  |  |\n|  |  |  Тестовый проект 2                              |  |  |\n|  |  |  Краткое описание: «Одностраничное приложение   |  |  |\n|  |  |  с красивой кнопкой «Начать».»                 |  |  |\n|  |  -------------------------------------------------  |  |\n|  |                                                   |  |\n|  |   [  Начать  ]   ←  primary button, rounded,       |  |\n|  |                 gradient background, hover      |  |\n|  |                 shadow, accessible focus ring   |  |\n|  +-----------------------------------------------------+  |\n|                                                           |\n+-----------------------------------------------------------+\n```\n\n*Styling notes*  \n\n* **Background:** dark‑blue `#0b1020` → subtle gradient to `#151c2b`.  \n* **Typography:** system UI font stack, `font-size: 2.2rem` for the title, `1rem` for description.  \n* **Button:** `background: linear-gradient(135deg, #4a90e2, #007aff);`  \n  `border-radius: 12px;` `padding: 0.75rem 1.5rem;` `color:#fff;`  \n  `box-shadow: 0 4px 12px rgba(0,0,0,0.2);`  \n  `:focus-visible` → outline `2px solid #fff`.  \n\nAll colors meet WCAG AA contrast on the dark background.\n\n---\n\n## 4. File contents (high‑level)\n\n### `src/index.html`\n\n```html\n<!doctype html>\n<html lang=\"ru\">\n<head>\n  <meta charset=\"utf-8\">\n  <meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">\n  <title>Тестовый проект 2</title>\n  <link rel=\"stylesheet\" href=\"style.css\">\n</head>\n<body>\n  <header class=\"header\">\n    <h1>Тестовый проект 2</h1>\n    <p class=\"description\">Одностраничное приложение с красивой кнопкой «Начать».</p>\n  </header>\n\n  <main class=\"hero\">\n    <h2>Тестовый проект 2</h2>\n    <p class=\"short\">Простой стартовый экран, готовый к расширению.</p>\n    <button id=\"startBtn\" class=\"btn-primary\">Начать</button>\n  </main>\n\n  <script type=\"module\" src=\"main.js\"></script",
+          "round": 1,
+          "created_at": "2026-10-04T19:46:05.495279+00:00"
+        }
+      ],
       "approved": true,
       "review_verdict": null,
       "created_at": "2026-10-04T19:45:51.581381+00:00",
@@ -152,7 +163,7 @@
       "role": "architect",
       "instructions": "Design the project structure, UI mockup, and choose tech stack (HTML5, CSS3, optional lightweight JS). Define repository layout and testing approach.",
       "task_id": "TASK-3034DAE007",
-      "status": "assigned",
+      "status": "completed",
       "created_at": "2026-10-04T19:45:51.581415+00:00"
     },
     {
