@@ -50,7 +50,8 @@ def plan_task(text):
                 json={"model":os.getenv("GROQ_MODEL","openai/gpt-oss-120b"),"temperature":0.2,"response_format":{"type":"json_object"},
                       "messages":[{"role":"system","content":system},{"role":"user","content":text}]},timeout=60)
             r.raise_for_status(); return json.loads(r.json()["choices"][0]["message"]["content"])
-        except Exception: pass
+        except Exception as e:
+            return {"summary":"Ошибка AI API: "+str(e),"agents":[],"steps":[],"risks":["AI API не ответил. Проверь GROQ_API_KEY, GROQ_MODEL и логи Render."],"needs_approval":True,"ai_error":True}
     steps=heuristic_plan(text)
     return {"summary":"План создан локальным оркестратором без AI API.","agents":[{"role":r,"name":r.title(),"instructions":d} for r,d in steps],
             "steps":[d for _,d in steps],"risks":["Внешние действия выполняются только после подключения соответствующего инструмента."],"needs_approval":True}
