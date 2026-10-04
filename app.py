@@ -36,8 +36,16 @@ def call_groq(prompt, system="Ты специализированный аген
             headers={"Authorization":f"Bearer {key}","Content-Type":"application/json"},
             json={"model":os.getenv("GROQ_MODEL","openai/gpt-oss-120b"),"temperature":0.2,
                   "messages":[{"role":"system","content":system},{"role":"user","content":prompt}]},timeout=60)
-        r.raise_for_status(); return r.json()["choices"][0]["message"]["content"]
-    except Exception as e: return {"error":str(e)}
+        r.raise_for_status()
+        data=r.json()
+        return data["choices"][0]["message"]["content"]
+    except requests.HTTPError as e:
+        body=""
+        try: body=e.response.text[:1000]
+        except Exception: pass
+        return {"error":f"Groq HTTP {e.response.status_code if e.response is not None else '?'}: {body or str(e)}"}
+    except Exception as e:
+        return {"error":f"{type(e).__name__}: {str(e)}"}
 
 def plan_task(text):
     key=os.getenv("GROQ_API_KEY")
@@ -116,9 +124,10 @@ def run_task(task_id):
 Дай конкретный результат, который следующий агент сможет использовать."""
         result=call_groq(prompt, system=f"Ты {role} внутри многоагентной команды. Работаешь как реальный специалист, но не выдумываешь внешние действия.")
         if isinstance(result,dict) and result.get("error"):
+            err=result["error"]
             task["status"]="failed"; task["updated_at"]=now()
-            task["outputs"].append({"agent":a,"result":result,"created_at":now()})
-            add_event(s,"error",f"{task_id}: ошибка агента {a.get('name',role)}")
+            task["outputs"].append({"agent":a,"result":err,"error":True,"created_at":now()})
+            add_event(s,"error",f"{task_id}: ошибка агента {a.get('name',role)} — {err[:500]}")
             save_state(s); return jsonify(task),502
         out=result or "AI API не подключён."
         task["outputs"].append({"agent":a,"result":out,"created_at":now()})
