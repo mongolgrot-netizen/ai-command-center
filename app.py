@@ -181,8 +181,12 @@ def github_execute_actions(actions,task_id):
     return {"executed":sum(1 for x in results if x.get("ok")),"results":results}
 
 def github_project_context():
+    global GITHUB_CONTEXT_CACHE
     if not github_configured():
         return "GitHub-контекст недоступен."
+    import time as _time
+    if GITHUB_CONTEXT_CACHE["value"] and (_time.time() - GITHUB_CONTEXT_CACHE["at"] < 60):
+        return GITHUB_CONTEXT_CACHE["value"]
     parts=[]
     for path in ("index.html","style.css","app.js","requirements.txt","README.md"):
         data=github_get_file(path)
@@ -193,7 +197,9 @@ def github_project_context():
             except Exception:
                 raw=str(data.get("content",""))
             parts.append(f"--- {path} ---\n{raw[:700]}")
-    return "\n".join(parts)[:3500] or "Файлы проекта не прочитаны."
+    value="\n".join(parts)[:3500] or "Файлы проекта не прочитаны."
+    GITHUB_CONTEXT_CACHE={"value":value,"at":_time.time()}
+    return value
 
 def extract_github_actions(text):
     try:
