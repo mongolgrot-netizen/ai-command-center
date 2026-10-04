@@ -1,0 +1,1 @@
+document.getElementById('start').addEventListener('click',()=>{document.getElementById('result').textContent='Готово!';});
