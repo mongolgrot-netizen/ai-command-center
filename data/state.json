@@ -488,6 +488,12 @@
   "memory": [],
   "events": [
     {
+      "id": "25edeedf9a",
+      "kind": "github",
+      "message": "TASK-5848598EF4: GitHub действий выполнено 3",
+      "created_at": "2026-10-04T20:24:02.641061+00:00"
+    },
+    {
       "id": "1e4549067d",
       "kind": "agent_start",
       "message": "TASK-5848598EF4: запущен Bela (developer), раунд 1",
