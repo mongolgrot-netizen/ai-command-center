@@ -4,7 +4,7 @@
       "id": "TASK-3034DAE007",
       "title": "Создай простое веб-приложение «Тестовый проект 2». Нужна современная главная страница, заголовок «Тестовый проект 2», кр",
       "description": "Создай простое веб-приложение «Тестовый проект 2». Нужна современная главная страница, заголовок «Тестовый проект 2», краткое описание и красивая кнопка «Начать». Создай все необходимые файлы проекта в GitHub. После разработки обязательно протестируй проект. Если тест обнаружит ошибку — исправь её и повтори тест. Заверши только после VERDICT: PASS.",
-      "status": "approved",
+      "status": "running",
       "plan": {
         "summary": "Create a simple modern web application \"Тестовый проект 2\" with a homepage containing a title, description, and a styled \"Начать\" button, host the code in a new GitHub repository, test the UI, fix any issues, and finalize after a PASS verdict.",
         "agents": [
@@ -56,7 +56,7 @@
       "approved": true,
       "review_verdict": null,
       "created_at": "2026-10-04T19:45:51.581381+00:00",
-      "updated_at": "2026-10-04T19:45:56.716712+00:00"
+      "updated_at": "2026-10-04T19:45:58.622775+00:00"
     },
     {
       "id": "TASK-7A46F2C6B3",
@@ -204,6 +204,12 @@
   "projects": [],
   "memory": [],
   "events": [
+    {
+      "id": "f06e810d73",
+      "kind": "status",
+      "message": "TASK-3034DAE007: выполнение запущено",
+      "created_at": "2026-10-04T19:45:58.622809+00:00"
+    },
     {
       "id": "36090edf78",
       "kind": "approval",
