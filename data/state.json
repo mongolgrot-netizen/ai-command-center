@@ -1,9 +1,113 @@
 {
-  "tasks": [],
-  "agents": [],
+  "tasks": [
+    {
+      "id": "TASK-7A46F2C6B3",
+      "title": "Проверка сохранения состояния",
+      "description": "Проверка сохранения состояния",
+      "status": "planned",
+      "plan": {
+        "summary": "Plan to verify state persistence across sessions.",
+        "agents": [
+          {
+            "role": "architect",
+            "name": "StatePersistArchitect",
+            "instructions": "Design a simple test that writes a known value to persistent storage (e.g., a file) and later reads it back to confirm the value is unchanged."
+          },
+          {
+            "role": "developer",
+            "name": "StatePersistDeveloper",
+            "instructions": "Implement a small script (Python) that writes a predefined string to a temporary file and then reads it back, outputting the result."
+          },
+          {
+            "role": "tester",
+            "name": "StatePersistTester",
+            "instructions": "Execute the script, capture its output, and compare the read value with the original. Report success or mismatch."
+          },
+          {
+            "role": "debugger",
+            "name": "StatePersistDebugger",
+            "instructions": "If the tester reports a mismatch or error, investigate the script, fix file handling or path issues, and ensure the script runs in the sandboxed environment."
+          },
+          {
+            "role": "reviewer",
+            "name": "StatePersistReviewer",
+            "instructions": "Review the final test results and the script code to confirm that state persistence works as intended and that no security concerns exist."
+          }
+        ],
+        "steps": [
+          "Architect creates test design document.",
+          "Developer writes Python script using safe temporary directory.",
+          "Tester runs script, logs output, compares values.",
+          "If failure, Debugger fixes script and retests.",
+          "Reviewer validates successful persistence and signs off."
+        ],
+        "risks": "Minimal: script writes to temporary file; ensure sandboxed file system to avoid data leakage. Potential risk of leftover files if cleanup fails.",
+        "needs_approval": false
+      },
+      "outputs": [],
+      "approved": false,
+      "review_verdict": null,
+      "created_at": "2026-10-04T19:44:26.358670+00:00",
+      "updated_at": "2026-10-04T19:44:26.358683+00:00"
+    }
+  ],
+  "agents": [
+    {
+      "id": "AGENT-2C24FD7FDB",
+      "name": "StatePersistReviewer",
+      "role": "reviewer",
+      "instructions": "Review the final test results and the script code to confirm that state persistence works as intended and that no security concerns exist.",
+      "task_id": "TASK-7A46F2C6B3",
+      "status": "assigned",
+      "created_at": "2026-10-04T19:44:26.358722+00:00"
+    },
+    {
+      "id": "AGENT-BC64D5D970",
+      "name": "StatePersistDebugger",
+      "role": "debugger",
+      "instructions": "If the tester reports a mismatch or error, investigate the script, fix file handling or path issues, and ensure the script runs in the sandboxed environment.",
+      "task_id": "TASK-7A46F2C6B3",
+      "status": "assigned",
+      "created_at": "2026-10-04T19:44:26.358718+00:00"
+    },
+    {
+      "id": "AGENT-255DCC8A5B",
+      "name": "StatePersistTester",
+      "role": "tester",
+      "instructions": "Execute the script, capture its output, and compare the read value with the original. Report success or mismatch.",
+      "task_id": "TASK-7A46F2C6B3",
+      "status": "assigned",
+      "created_at": "2026-10-04T19:44:26.358712+00:00"
+    },
+    {
+      "id": "AGENT-38429CF150",
+      "name": "StatePersistDeveloper",
+      "role": "developer",
+      "instructions": "Implement a small script (Python) that writes a predefined string to a temporary file and then reads it back, outputting the result.",
+      "task_id": "TASK-7A46F2C6B3",
+      "status": "assigned",
+      "created_at": "2026-10-04T19:44:26.358707+00:00"
+    },
+    {
+      "id": "AGENT-C907AC044D",
+      "name": "StatePersistArchitect",
+      "role": "architect",
+      "instructions": "Design a simple test that writes a known value to persistent storage (e.g., a file) and later reads it back to confirm the value is unchanged.",
+      "task_id": "TASK-7A46F2C6B3",
+      "status": "assigned",
+      "created_at": "2026-10-04T19:44:26.358699+00:00"
+    }
+  ],
   "projects": [],
   "memory": [],
-  "events": [],
+  "events": [
+    {
+      "id": "695f2c3067",
+      "kind": "task",
+      "message": "Создана задача TASK-7A46F2C6B3 и сформирована AI-команда",
+      "created_at": "2026-10-04T19:44:26.358744+00:00"
+    }
+  ],
   "settings": {
     "approval_required": true
   }
