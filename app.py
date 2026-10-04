@@ -74,7 +74,7 @@ def heuristic_plan(text):
     if any(x in t for x in ["авито","реклам","маркет","продвиж"]): return [("marketing","Разработать стратегию"),("analyst","Оценить варианты"),("reviewer","Проверить план")]
     return [("analyst","Разобрать задачу"),("architect","Сформировать план"),("reviewer","Проверить результат")]
 
-def call_groq(prompt, system="Ты специализированный агент внутри AI Command Center. Не выдумывай выполненные действия.", max_tokens=800, retries=3):
+def call_groq(prompt, system="Ты специализированный агент внутри AI Command Center. Не выдумывай выполненные действия.", max_tokens=800, retries=1):
     key=os.getenv("GROQ_API_KEY")
     if not key: return None
     for attempt in range(retries):
@@ -92,12 +92,8 @@ def call_groq(prompt, system="Ты специализированный аген
             try: body=e.response.text[:1200]
             except Exception: pass
             status=e.response.status_code if e.response is not None else None
-            if status==429 and attempt < retries-1:
-                m=re.search(r"try again in ([0-9.]+)s", body, re.I)
-                wait=float(m.group(1)) if m else 5.0
-                time.sleep(min(max(wait+1.0,6.0),20.0))
-                continue
-            return {"error":f"Groq HTTP {status or '?'}: {body or str(e)}"}
+            if status==429:
+                return {"error":"Groq HTTP 429: лимит AI достигнут. Повтор не выполнялся, чтобы не расходовать лимит."}
         except Exception as e:
             if attempt < retries-1:
                 time.sleep(2)
@@ -291,7 +287,7 @@ def execute_task(task_id):
             EXECUTION_LOCKS.pop(task_id, None)
 
 def _execute_task_locked(task_id):
-    max_rounds=3
+    max_rounds=2
     previous=""
     for round_no in range(1,max_rounds+1):
         s=load_state(); task=next((x for x in s["tasks"] if x["id"]==task_id),None)
@@ -304,6 +300,26 @@ def _execute_task_locked(task_id):
         else:
             run_agents=[a for a in agents if a.get("role") in ("debugger","tester","reviewer")]
         for idx,a in enumerate(run_agents,1):
+            if a.get("role")=="tester":
+                project_path=f"projects/{task_id}"
+                data=github_get_file(f"{project_path}/index.html")
+                passed=False
+                html=""
+                if data.get("content"):
+                    import base64
+                    try: html=base64.b64decode(data["content"]).decode("utf-8","replace")
+                    except Exception: html=""
+                passed=bool(html) and bool(re.search(r"<title>.*?</title>",html,re.I|re.S)) and bool(re.search(r"<button[^>]*>.*?</button>",html,re.I|re.S))
+                out=("AUTOTEST PASS: index.html найден, title и button присутствуют." if passed else "AUTOTEST FAIL: index.html или обязательные элементы не найдены.")
+                s=load_state(); task=next((x for x in s["tasks"] if x["id"]==task_id),None)
+                if task:
+                    task["outputs"].append({"agent":a,"result":out,"round":round_no,"created_at":now()})
+                    previous += f"\n\n[round {round_no} tester]\n{out}"
+                    agent_rec=next((x for x in s["agents"] if x.get("task_id")==task_id and x.get("role")=="tester"),None)
+                    if agent_rec: agent_rec["status"]="completed"
+                    task["current_agent"]=None; task["current_role"]=None; task["updated_at"]=now()
+                    add_event(s,"test",f"{task_id}: {out}"); save_state(s)
+                continue
             role=a.get("role","specialist")
             prompt=f"""Ты агент AI Command Center. Раунд {round_no}.
 Исходная задача: {task["description"]}
