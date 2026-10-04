@@ -11,11 +11,52 @@ STATE_FILE = DATA / "state.json"
 DEFAULT_STATE = {"tasks":[],"agents":[],"projects":[],"memory":[],"events":[],"settings":{"approval_required":True}}
 
 def now(): return datetime.now(timezone.utc).isoformat()
+STATE_REPO_PATH = "data/state.json"
+
 def load_state():
-    if not STATE_FILE.exists(): save_state(DEFAULT_STATE)
-    try: return json.loads(STATE_FILE.read_text(encoding="utf-8"))
-    except Exception: return json.loads(json.dumps(DEFAULT_STATE))
-def save_state(s): STATE_FILE.write_text(json.dumps(s,ensure_ascii=False,indent=2),encoding="utf-8")
+    # На бесплатном Render локальный диск непостоянный. Если GitHub подключён,
+    # состояние Command Center хранится в репозитории и переживает перезапуски.
+    if github_configured():
+        data = github_get_file(STATE_REPO_PATH)
+        if data.get("content"):
+            try:
+                import base64
+                raw = base64.b64decode(data["content"]).decode("utf-8")
+                parsed = json.loads(raw)
+                if isinstance(parsed, dict):
+                    return parsed
+            except Exception:
+                pass
+    if STATE_FILE.exists():
+        try:
+            return json.loads(STATE_FILE.read_text(encoding="utf-8"))
+        except Exception:
+            pass
+    return json.loads(json.dumps(DEFAULT_STATE))
+
+def save_state(s):
+    payload = json.dumps(s, ensure_ascii=False, indent=2)
+    # GitHub — постоянное хранилище; локальный файл остаётся fallback.
+    try:
+        STATE_FILE.write_text(payload, encoding="utf-8")
+    except Exception:
+        pass
+    if github_configured():
+        try:
+            existing = github_get_file(STATE_REPO_PATH)
+            sha = existing.get("sha")
+            out = github_write_file(
+                STATE_REPO_PATH,
+                payload,
+                "AI Command Center: persist state",
+                sha=sha
+            )
+            if out.get("error"):
+                # Не ломаем выполнение задачи из-за временной ошибки GitHub.
+                pass
+        except Exception:
+            pass
+
 def add_event(s,k,m):
     s["events"].insert(0,{"id":uuid.uuid4().hex[:10],"kind":k,"message":m,"created_at":now()}); s["events"]=s["events"][:200]
 
@@ -184,7 +225,7 @@ Debugger должен исправлять проблемы, найденные 
 
 def create_task_internal(text):
     s=load_state(); plan=plan_task(text)
-    task={"id":"TASK-"+uuid.uuid4().hex[:10].upper(),"title":text[:120],"description":text,"status":"planned","plan":plan,"outputs":[],"approved":False,"created_at":now(),"updated_at":now()}
+    task={"id":"TASK-"+uuid.uuid4().hex[:10].upper(),"title":text[:120],"description":text,"status":"planned","plan":plan,"outputs":[],"approved":False,"review_verdict":None,"created_at":now(),"updated_at":now()}
     s["tasks"].insert(0,task)
     for a in plan.get("agents",[]):
         s["agents"].insert(0,{"id":"AGENT-"+uuid.uuid4().hex[:10].upper(),"name":a.get("name","Agent"),"role":a.get("role","specialist"),
@@ -200,19 +241,9 @@ def static_files(path): return send_from_directory(BASE,path)
 def health(): return jsonify({"ok":True,"service":"AI Command Center","time":now()})
 @app.get("/api/state")
 def state():
-    s=load_state()
-    # Самовосстановление: если все агенты задачи завершены, задача не может оставаться running.
-    changed=False
-    for task in s["tasks"]:
-        if task.get("status")=="running":
-            task_agents=[a for a in s["agents"] if a.get("task_id")==task.get("id")]
-            if task_agents and all(a.get("status")=="completed" for a in task_agents):
-                task["status"]="completed"
-                task["updated_at"]=now()
-                add_event(s,"status",f'{task["id"]}: статус автоматически синхронизирован → completed')
-                changed=True
-    if changed: save_state(s)
-    return jsonify(s)
+    # Никаких автоматических переводов running -> completed:
+    # финальный статус устанавливает только controller/reviewer.
+    return jsonify(load_state())
 @app.post("/api/task")
 def create_task():
     text=(request.get_json(silent=True) or {}).get("text","").strip()
@@ -295,11 +326,17 @@ Reviewer обязан дать строку VERDICT: PASS или VERDICT: FAIL.
         verdict=""
         if reviewer_outputs:
             verdict=(reviewer_outputs[-1].get("result") or "").upper()
-        if "VERDICT: PASS" in verdict or ("PASS" in verdict and "FAIL" not in verdict[-200:]):
-            s=load_state(); task=next((x for x in s["tasks"] if x["id"]==task_id),None)
-            if task:
+        m = re.search(r"VERDICT\s*:\s*(PASS|FAIL)", verdict, re.I)
+        explicit_verdict = m.group(1).upper() if m else "FAIL"
+        s=load_state(); task=next((x for x in s["tasks"] if x["id"]==task_id),None)
+        if task:
+            task["review_verdict"]=explicit_verdict
+            if explicit_verdict=="PASS":
                 task["status"]="completed"; task["updated_at"]=now()
-                add_event(s,"task",f"{task_id}: Reviewer подтвердил PASS, задача завершена"); save_state(s)
+                add_event(s,"task",f"{task_id}: Reviewer подтвердил PASS, задача завершена")
+                save_state(s)
+                return
+        if explicit_verdict=="PASS":
             return
         if round_no<max_rounds:
             s=load_state(); task=next((x for x in s["tasks"] if x["id"]==task_id),None)
@@ -309,6 +346,7 @@ Reviewer обязан дать строку VERDICT: PASS или VERDICT: FAIL.
                 continue
         s=load_state(); task=next((x for x in s["tasks"] if x["id"]==task_id),None)
         if task:
+            task["review_verdict"]="FAIL"
             task["status"]="failed"; task["updated_at"]=now()
             add_event(s,"task",f"{task_id}: Reviewer не подтвердил PASS после {max_rounds} раундов"); save_state(s)
         return
