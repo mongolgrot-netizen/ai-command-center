@@ -74,10 +74,10 @@
       "approved": true,
       "review_verdict": null,
       "created_at": "2026-10-04T20:08:25.262475+00:00",
-      "updated_at": "2026-10-04T20:23:55.708728+00:00",
+      "updated_at": "2026-10-04T20:24:05.556238+00:00",
       "current_round": 1,
-      "current_agent": null,
-      "current_role": null,
+      "current_agent": "Cara",
+      "current_role": "tester",
       "execution_started_at": "2026-10-04T20:23:49.477242+00:00"
     },
     {
@@ -497,6 +497,12 @@
   "projects": [],
   "memory": [],
   "events": [
+    {
+      "id": "c8dee2b68d",
+      "kind": "agent_start",
+      "message": "TASK-5848598EF4: запущен Cara (tester), раунд 1",
+      "created_at": "2026-10-04T20:24:05.556281+00:00"
+    },
     {
       "id": "25edeedf9a",
       "kind": "github",
