@@ -119,6 +119,16 @@
           "result": "{\n  \"actions\": [\n    {\n      \"action\": \"write_file\",\n      \"path\": \"projects/test-project-3/index.html\",\n      \"content\": \"<!doctype html>\\n<html lang=\\\"ru\\\">\\n<head>\\n  <meta charset=\\\"utf-8\\\">\\n  <meta name=\\\"viewport\\\" content=\\\"width=device-width,initial-scale=1\\\">\\n  <title>Тестовый проект 3</title>\\n  <link rel=\\\"stylesheet\\\" href=\\\"style.css\\\">\\n</head>\\n<body>\\n  <div class=\\\"container\\\">\\n    <h1>Тестовый проект 3</h1>\\n    <p>Это простое веб‑приложение с заголовком, описанием и кнопкой «Начать».</p>\\n    <button id=\\\"startBtn\\\">Начать</button>\\n  </div>\\n  <script src=\\\"script.js\\\"></script>\\n</body>\\n</html>\"\n    },\n    {\n      \"action\": \"write_file\",\n      \"path\": \"projects/test-project-3/style.css\",\n      \"content\": \"/* Основные стили для Тестового проекта 3 */\\nbody {\\n  margin: 0;\\n  font-family: system-ui, -apple-system, \\\"Segoe UI\\\", sans-serif;\\n  background-color: #f5f7fa;\\n  color: #333;\\n  display: flex;\\n  justify-content: center;\\n  align-items: center;\\n  height: 100vh;\\n}\\n\\n.container {\\n  text-align: center;\\n  background: #fff;\\n  padding: 2rem;\\n  border-radius: 12px;\\n  box-shadow: 0 4px 12px rgba(0,0,0,0.1);\\n}\\n\\nh1 {\\n  margin-bottom: 0.5rem;\\n  font-size: 2rem;\\n  color: #2c3e50;\\n}\\n\\np {\\n  margin-bottom: 1.5rem;\\n  font-size: 1rem;\\n  color: #555;\\n}\\n\\nbutton {\\n  font-size: 1rem;\\n  padding: 0.6rem 1.2rem;\\n  border: none;\\n  border-radius: 6px;\\n  background-color: #3498db;\\n  color: #fff;\\n  cursor: pointer;\\n  transition: background-color 0.2s ease;\\n}\\n\\nbutton:hover {\\n  background-color: #2980b9;\\n}\"\n    },\n    {\n      \"action\": \"write_file\",\n      \"path\": \"projects/test-project-3/script.js\",\n      \"content\": \"// Простейшая логика для кнопки «Начать»\\ndocument.addEventListener('DOMContentLoaded', function () {\\n  const btn = document.getElementById('startBtn');\\n  if (btn) {\\n    btn.addEventListener('click', function () {\\n      alert('Приложение запущено!');\\n    });\\n  }\\n});\"\n    },\n    {\n      \"action\": \"write_file\",\n      \"path\": \"projects/test-project-3/.gitignore\",\n      \"content\": \"# Node.js dependencies\\nnode_modules/\\n\\n# OS generated files\\n.DS_Store\\nThumbs.db\\n\\n# Logs\\nnpm-debug.log*\\ny\n\n[GITHUB EXECUTION]\n{\"executed\": 0, \"error\": \"Агент не предоставил actions для изменения проекта\"}",
           "round": 1,
           "created_at": "2026-10-04T20:24:55.979341+00:00"
+        },
+        {
+          "agent": {
+            "role": "tester",
+            "name": "Cara",
+            "instructions": "Write and run a simple test suite (e.g., using Cypress or Playwright) that checks the page loads, the title and description are visible, and the “Начать” button is clickable."
+          },
+          "result": "AI API не подключён.",
+          "round": 1,
+          "created_at": "2026-10-04T20:25:10.900759+00:00"
         }
       ],
       "approved": true,
@@ -126,8 +136,8 @@
       "created_at": "2026-10-04T20:08:25.262475+00:00",
       "updated_at": "2026-10-04T20:24:57.323435+00:00",
       "current_round": 1,
-      "current_agent": "Cara",
-      "current_role": "tester",
+      "current_agent": null,
+      "current_role": null,
       "execution_started_at": "2026-10-04T20:23:49.477242+00:00"
     },
     {
