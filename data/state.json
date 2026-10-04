@@ -94,10 +94,10 @@
       "approved": true,
       "review_verdict": null,
       "created_at": "2026-10-04T20:08:25.262475+00:00",
-      "updated_at": "2026-10-04T20:08:46.253862+00:00",
+      "updated_at": "2026-10-04T20:08:56.367439+00:00",
       "current_round": 1,
-      "current_agent": null,
-      "current_role": null
+      "current_agent": "Elena",
+      "current_role": "reviewer"
     },
     {
       "id": "TASK-293159BA77",
@@ -516,6 +516,12 @@
   "projects": [],
   "memory": [],
   "events": [
+    {
+      "id": "acbb8f48f9",
+      "kind": "agent_start",
+      "message": "TASK-5848598EF4: запущен Elena (reviewer), раунд 1",
+      "created_at": "2026-10-04T20:08:56.367479+00:00"
+    },
     {
       "id": "db7c828809",
       "kind": "github",
