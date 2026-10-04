@@ -507,6 +507,12 @@
   "memory": [],
   "events": [
     {
+      "id": "db7c828809",
+      "kind": "github",
+      "message": "TASK-5848598EF4: GitHub действий выполнено 3",
+      "created_at": "2026-10-04T20:08:53.946331+00:00"
+    },
+    {
       "id": "2123645614",
       "kind": "agent_start",
       "message": "TASK-5848598EF4: запущен Dmitri (debugger), раунд 1",
