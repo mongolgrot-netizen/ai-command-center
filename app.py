@@ -478,6 +478,12 @@ Reviewer обязан дать строку VERDICT: PASS или VERDICT: FAIL.
             task["review_verdict"]=explicit_verdict
             if explicit_verdict=="PASS":
                 task["status"]="completed"; task["execution_started_at"]=None; task["current_agent"]=None; task["current_role"]=None; task["updated_at"]=now()
+                archived = archive_task_agents(s, task_id)
+                register_project(s, task)
+                if archived:
+                    add_event(s,"agents",f"{task_id}: команда завершена и архивирована ({archived} агентов)")
+                s.setdefault("memory", []).insert(0, {"id":"MEM-"+uuid.uuid4().hex[:10].upper(),"task_id":task_id,"content":f"Успешно завершено: {task.get('title','')[:100]}. Reviewer: PASS.","created_at":now()})
+                s["memory"] = s["memory"][:500]
                 add_event(s,"task",f"{task_id}: Reviewer подтвердил PASS, задача завершена")
                 save_state(s)
                 return
