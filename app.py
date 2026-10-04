@@ -552,7 +552,13 @@ def recover_running_tasks():
     except Exception:
         pass
 
+def delayed_recovery():
+    # Не блокируем старт Gunicorn: восстановление старых задач запускается после того,
+    # как веб-сервер уже успел подняться и пройти health check.
+    time.sleep(10)
+    recover_running_tasks()
+
 if os.getenv("DISABLE_AUTO_RECOVERY","").lower() not in ("1","true","yes"):
-    threading.Thread(target=recover_running_tasks,daemon=True).start()
+    threading.Thread(target=delayed_recovery,daemon=True).start()
 
 if __name__=="__main__":app.run(host="0.0.0.0",port=int(os.getenv("PORT","5000")))
