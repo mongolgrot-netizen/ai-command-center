@@ -4,7 +4,7 @@
       "id": "TASK-C62FF787C3",
       "title": "Проведи анализ того, как можно улучшить продвижение моих объявлений на Авито и составь пошаговый план.»",
       "description": "Проведи анализ того, как можно улучшить продвижение моих объявлений на Авито и составь пошаговый план.»",
-      "status": "approved",
+      "status": "running",
       "plan": {
         "summary": "Develop a comprehensive strategy to boost visibility and conversion of your Avito listings through market analysis, optimization of ad content, targeted promotion, and performance monitoring.",
         "agents": [
@@ -56,70 +56,15 @@
         ],
         "needs_approval": false
       },
-      "outputs": [
-        {
-          "agent": {
-            "role": "marketing_strategist",
-            "name": "Strategist",
-            "instructions": "Conduct market research on Avito categories, competitor ads, and target audience preferences. Define key performance indicators (KPIs) and overall promotion strategy."
-          },
-          "result": "## Анализ текущей ситуации и возможности улучшения продвижения объявлений на Авито  \n\n| Направление | Что проверяем | Как измеряем | Что может влиять |\n|-------------|---------------|--------------|------------------|\n| **Категории и подкатегории** | Соответствие выбранной категории реальному товару/услуге, наличие «горячих» подкатегорий | Доля показов в выбранной категории (Avito Analytics) | Неправильный выбор категории → снижение релевантности и CTR |\n| **Конкуренты** | Топ‑5 объявлений в той же категории/регионе, их цены, фото, заголовки, описание, наличие «премиум‑поднятия» | Средний CTR, средняя цена за клик (CPC) у конкурентов (через сервисы Avito Ads и сторонние парсеры) | Слишком низкая/высокая цена, плохие фото → падение позиции |\n| **Целевая аудитория** | Демография (возраст, пол, город), поведенческие предпочтения (поиск, фильтры) | Показатели «Вовлечённость» (просмотры, сообщения, звонки) в Avito Analytics | Неправильный таргетинг → низкая конверсия |\n| **Контент объявления** | Заголовок, описание, фото/видео, наличие «бонусов» (гарантия, доставка) | CTR, коэффициент конверсии (сообщения/звонки → сделки) | Плохие фото, нечеткий заголовок → низкий CTR |\n| **Тарифы и продвижение** | Тариф «Поднятие», «Выделение», «Срочное», «Таргетинг» | Стоимость за показ (CPM),",
-          "round": 1,
-          "created_at": "2026-10-04T21:12:53.703536+00:00"
-        },
-        {
-          "agent": {
-            "role": "seo_specialist",
-            "name": "SEOExpert",
-            "instructions": "Identify high‑traffic keywords, optimize titles, descriptions, and tags for Avito's search algorithm. Recommend internal linking and category placement."
-          },
-          "result": "ЛОКАЛЬНЫЙ FALLBACK: AI API недоступен.",
-          "fallback": true,
-          "error": false,
-          "created_at": "2026-10-04T21:12:57.159156+00:00"
-        },
-        {
-          "agent": {
-            "role": "copywriter",
-            "name": "CopyWriter",
-            "instructions": "Create compelling ad copy, headlines, and calls‑to‑action based on the strategist's brief and SEO recommendations."
-          },
-          "result": "ЛОКАЛЬНЫЙ FALLBACK: AI API недоступен.",
-          "fallback": true,
-          "error": false,
-          "created_at": "2026-10-04T21:13:00.198519+00:00"
-        },
-        {
-          "agent": {
-            "role": "designer",
-            "name": "Designer",
-            "instructions": "Produce eye‑catching images, infographics, and layout suggestions that comply with Avito's image guidelines and enhance click‑through rates."
-          },
-          "result": "ЛОКАЛЬНЫЙ FALLBACK: AI API недоступен.",
-          "fallback": true,
-          "error": false,
-          "created_at": "2026-10-04T21:13:03.296293+00:00"
-        },
-        {
-          "agent": {
-            "role": "analyst",
-            "name": "DataAnalyst",
-            "instructions": "Set up tracking (e.g., UTM parameters, Avito analytics), monitor KPIs, and generate weekly performance reports with actionable insights."
-          },
-          "result": "ЛОКАЛЬНЫЙ FALLBACK: AI API недоступен.",
-          "fallback": true,
-          "error": false,
-          "created_at": "2026-10-04T21:13:06.296956+00:00"
-        }
-      ],
+      "outputs": [],
       "approved": true,
-      "review_verdict": "FAIL",
+      "review_verdict": null,
       "created_at": "2026-10-04T21:07:56.307966+00:00",
-      "updated_at": "2026-10-04T21:16:18.182765+00:00",
+      "updated_at": "2026-10-04T21:16:19.911216+00:00",
       "current_agent": null,
       "current_role": null,
-      "current_round": 1,
-      "execution_started_at": "2026-10-04T21:12:47.131923+00:00"
+      "current_round": 0,
+      "execution_started_at": "2026-10-04T21:16:19.911203+00:00"
     },
     {
       "id": "TASK-F3C447D550",
@@ -1255,6 +1200,12 @@
     }
   ],
   "events": [
+    {
+      "id": "19b5a2d98d",
+      "kind": "status",
+      "message": "TASK-C62FF787C3: выполнение запущено",
+      "created_at": "2026-10-04T21:16:19.911249+00:00"
+    },
     {
       "id": "f4f68c71cc",
       "kind": "approval",
