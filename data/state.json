@@ -1,0 +1,10 @@
+{
+  "tasks": [],
+  "agents": [],
+  "projects": [],
+  "memory": [],
+  "events": [],
+  "settings": {
+    "approval_required": true
+  }
+}
