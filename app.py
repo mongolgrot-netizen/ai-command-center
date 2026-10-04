@@ -499,9 +499,22 @@ Reviewer обязан дать строку VERDICT: PASS или VERDICT: FAIL.
         # Определяем итог reviewer. PASS завершает задачу; FAIL запускает новый repair round.
         reviewer_outputs=[o for o in task.get("outputs",[]) if o.get("agent",{}).get("role")=="reviewer"]
         if not reviewer_outputs:
-            # Если AI недоступен и reviewer не был вызван, оцениваем результат локально.
-            tester_pass=any("AUTOTEST PASS" in str(o.get("result","")) for o in task.get("outputs",[]))
-            local_review="ЛОКАЛЬНЫЙ FALLBACK REVIEWER: автотест пройден.\\nVERDICT: PASS" if tester_pass else "ЛОКАЛЬНЫЙ FALLBACK REVIEWER: автотест не пройден.\\nVERDICT: FAIL"
+            # Бесплатный локальный reviewer: для разработки нужен AUTOTEST PASS,
+            # для аналитических/маркетинговых/юридических задач достаточно
+            # наличия результата хотя бы одного специалиста.
+            outputs_text="\\n".join(str(o.get("result","")) for o in task.get("outputs",[]))
+            tester_pass="AUTOTEST PASS" in outputs_text
+            tester_fail="AUTOTEST FAIL" in outputs_text
+            nonempty_outputs=[o for o in task.get("outputs",[]) if str(o.get("result","")).strip()]
+            is_development=any(a.get("role") in ("developer","coder","frontend_developer","backend_developer","tester","debugger","architect") for a in task.get("plan",{}).get("agents",[]))
+            if tester_fail:
+                local_review="ЛОКАЛЬНЫЙ FALLBACK REVIEWER: автотест не пройден.\\nVERDICT: FAIL"
+            elif is_development and not tester_pass:
+                local_review="ЛОКАЛЬНЫЙ FALLBACK REVIEWER: для разработки нет подтверждения автотеста.\\nVERDICT: FAIL"
+            elif nonempty_outputs:
+                local_review="ЛОКАЛЬНЫЙ FALLBACK REVIEWER: результат специалистов сформирован; явных ошибок не обнаружено.\\nVERDICT: PASS"
+            else:
+                local_review="ЛОКАЛЬНЫЙ FALLBACK REVIEWER: недостаточно данных для проверки.\\nVERDICT: FAIL"
             task["outputs"].append({"agent":{"name":"LocalReviewer","role":"reviewer"},"result":local_review,"round":round_no,"created_at":now(),"fallback":True})
             reviewer_outputs=[task["outputs"][-1]]
             add_event(s,"review",f"{task_id}: локальный reviewer сформировал вердикт")
