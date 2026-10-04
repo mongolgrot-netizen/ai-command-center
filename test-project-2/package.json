@@ -1,0 +1,14 @@
+{
+  "name": "test-project-2",
+  "version": "1.0.0",
+  "description": "Simple landing page – Тестовый проект 2",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "playwright test",
+    "postinstall": "playwright install"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.47.0"
+  }
+}
