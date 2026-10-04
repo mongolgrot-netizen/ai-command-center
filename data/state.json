@@ -1,6 +1,60 @@
 {
   "tasks": [
     {
+      "id": "TASK-014301E823",
+      "title": "Создай простое веб-приложение «Контрольный тест». Заголовок «Контрольный тест», короткое описание и кнопка «Начать». Соз",
+      "description": "Создай простое веб-приложение «Контрольный тест». Заголовок «Контрольный тест», короткое описание и кнопка «Начать». Создай файлы в GitHub в папке проекта.",
+      "status": "planned",
+      "plan": {
+        "summary": "Create a simple static web app named \"Контрольный тест\" with a title, description, and a \"Начать\" button, and provide the necessary source files ready to be added to a GitHub repository.",
+        "agents": [
+          {
+            "role": "architect",
+            "name": "WebAppArchitect",
+            "instructions": "Design the overall structure of the web app, choose a simple tech stack (HTML, CSS, JavaScript), define file hierarchy (index.html, style.css, script.js) and outline the UI layout."
+          },
+          {
+            "role": "developer",
+            "name": "WebAppDeveloper",
+            "instructions": "Implement the files according to the architect's design: create index.html with the title, description and button; style.css for basic styling; script.js with a placeholder click handler for the \"Начать\" button."
+          },
+          {
+            "role": "tester",
+            "name": "WebAppTester",
+            "instructions": "Open index.html in a browser, verify that the title, description and button render correctly, and that clicking the button triggers the expected placeholder behavior (e.g., console log)."
+          },
+          {
+            "role": "debugger",
+            "name": "WebAppDebugger",
+            "instructions": "If the tester finds any rendering or functionality issues, modify the HTML/CSS/JS to fix them and ensure the app works as intended."
+          },
+          {
+            "role": "reviewer",
+            "name": "WebAppReviewer",
+            "instructions": "Perform a final review of all source files, confirm they meet the requirements, are clean and safe, and provide concise instructions for the user to create a GitHub repository and push the files."
+          }
+        ],
+        "steps": [
+          "Architect designs layout and file structure.",
+          "Developer creates index.html, style.css, and script.js.",
+          "Tester runs the app locally and checks UI and button behavior.",
+          "Debugger fixes any issues reported by the tester.",
+          "Reviewer conducts final review and supplies GitHub push instructions."
+        ],
+        "risks": [
+          "User must manually create a GitHub repository; no automatic external actions are performed.",
+          "Potential for insecure code if not reviewed properly; reviewer mitigates this risk.",
+          "User may attempt to run untrusted JavaScript; code is minimal and safe."
+        ],
+        "needs_approval": true
+      },
+      "outputs": [],
+      "approved": false,
+      "review_verdict": null,
+      "created_at": "2026-10-04T20:33:52.016043+00:00",
+      "updated_at": "2026-10-04T20:33:52.016057+00:00"
+    },
+    {
       "id": "TASK-5848598EF4",
       "title": "Создай простое веб-приложение «Тестовый проект 3» с заголовком, описанием и кнопкой «Начать». Создай файлы в GitHub. Про",
       "description": "Создай простое веб-приложение «Тестовый проект 3» с заголовком, описанием и кнопкой «Начать». Создай файлы в GitHub. Проведи тестирование. Если найдёшь ошибку — исправь её. Заверши только после VERDICT: PASS.",
@@ -444,6 +498,51 @@
   ],
   "agents": [
     {
+      "id": "AGENT-9A785C53B7",
+      "name": "WebAppReviewer",
+      "role": "reviewer",
+      "instructions": "Perform a final review of all source files, confirm they meet the requirements, are clean and safe, and provide concise instructions for the user to create a GitHub repository and push the files.",
+      "task_id": "TASK-014301E823",
+      "status": "assigned",
+      "created_at": "2026-10-04T20:33:52.016104+00:00"
+    },
+    {
+      "id": "AGENT-845F05C39A",
+      "name": "WebAppDebugger",
+      "role": "debugger",
+      "instructions": "If the tester finds any rendering or functionality issues, modify the HTML/CSS/JS to fix them and ensure the app works as intended.",
+      "task_id": "TASK-014301E823",
+      "status": "assigned",
+      "created_at": "2026-10-04T20:33:52.016100+00:00"
+    },
+    {
+      "id": "AGENT-F7A56C6FDE",
+      "name": "WebAppTester",
+      "role": "tester",
+      "instructions": "Open index.html in a browser, verify that the title, description and button render correctly, and that clicking the button triggers the expected placeholder behavior (e.g., console log).",
+      "task_id": "TASK-014301E823",
+      "status": "assigned",
+      "created_at": "2026-10-04T20:33:52.016095+00:00"
+    },
+    {
+      "id": "AGENT-2BE23889CE",
+      "name": "WebAppDeveloper",
+      "role": "developer",
+      "instructions": "Implement the files according to the architect's design: create index.html with the title, description and button; style.css for basic styling; script.js with a placeholder click handler for the \"Начать\" button.",
+      "task_id": "TASK-014301E823",
+      "status": "assigned",
+      "created_at": "2026-10-04T20:33:52.016088+00:00"
+    },
+    {
+      "id": "AGENT-A68C4D8E42",
+      "name": "WebAppArchitect",
+      "role": "architect",
+      "instructions": "Design the overall structure of the web app, choose a simple tech stack (HTML, CSS, JavaScript), define file hierarchy (index.html, style.css, script.js) and outline the UI layout.",
+      "task_id": "TASK-014301E823",
+      "status": "assigned",
+      "created_at": "2026-10-04T20:33:52.016080+00:00"
+    },
+    {
       "id": "AGENT-960038E024",
       "name": "Elena",
       "role": "reviewer",
@@ -627,6 +726,12 @@
   "projects": [],
   "memory": [],
   "events": [
+    {
+      "id": "60b23668b8",
+      "kind": "task",
+      "message": "Создана задача TASK-014301E823 и сформирована AI-команда",
+      "created_at": "2026-10-04T20:33:52.016119+00:00"
+    },
     {
       "id": "ea00942360",
       "kind": "error",
