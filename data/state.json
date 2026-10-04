@@ -67,14 +67,25 @@
           "fallback": true,
           "error": false,
           "created_at": "2026-10-04T21:16:24.488557+00:00"
+        },
+        {
+          "agent": {
+            "role": "seo_specialist",
+            "name": "SEOExpert",
+            "instructions": "Identify high‑traffic keywords, optimize titles, descriptions, and tags for Avito's search algorithm. Recommend internal linking and category placement."
+          },
+          "result": "ЛОКАЛЬНЫЙ FALLBACK: AI API недоступен.",
+          "fallback": true,
+          "error": false,
+          "created_at": "2026-10-04T21:16:27.594232+00:00"
         }
       ],
       "approved": true,
       "review_verdict": null,
       "created_at": "2026-10-04T21:07:56.307966+00:00",
-      "updated_at": "2026-10-04T21:16:26.053553+00:00",
-      "current_agent": "SEOExpert",
-      "current_role": "seo_specialist",
+      "updated_at": "2026-10-04T21:16:27.594271+00:00",
+      "current_agent": null,
+      "current_role": null,
       "current_round": 1,
       "execution_started_at": "2026-10-04T21:16:19.911203+00:00"
     },
@@ -1212,6 +1223,12 @@
     }
   ],
   "events": [
+    {
+      "id": "4d427ec8fd",
+      "kind": "fallback",
+      "message": "TASK-C62FF787C3: SEOExpert переведён в локальный бесплатный режим: Groq HTTP 429: лимит AI достигнут. Повтор не выполнялся, чтобы не расходовать лимит.",
+      "created_at": "2026-10-04T21:16:27.594265+00:00"
+    },
     {
       "id": "6ca73ea14e",
       "kind": "agent_start",
