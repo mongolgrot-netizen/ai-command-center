@@ -14,6 +14,9 @@ DEFAULT_STATE = {"tasks":[],"agents":[],"projects":[],"memory":[],"events":[],"s
 
 def now(): return datetime.now(timezone.utc).isoformat()
 STATE_REPO_PATH = "data/state.json"
+STATE_CACHE = None
+STATE_LOCK = threading.RLock()
+GITHUB_CONTEXT_CACHE = {"value": "", "at": 0.0}
 
 def load_state():
     # На бесплатном Render локальный диск непостоянный. Если GitHub подключён,
