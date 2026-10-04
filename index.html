@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0b1020"><link rel="manifest" href="/manifest.webmanifest">
+<title>AI Command Center</title><link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<div class="app">
+<header><div><div class="eyebrow">CENTRAL AI CONTROL</div><h1>AI Command Center</h1><p>Управление задачами, агентами и будущими AI-системами</p></div><div id="health" class="pill">● проверка</div></header>
+<main>
+<section class="hero card">
+<h2>Что нужно сделать?</h2>
+<textarea id="taskInput" placeholder="Например: Создай веб-приложение для расчёта стоимости лестниц..."></textarea>
+<div class="row"><button id="runBtn" class="primary">🚀 Запустить задачу</button><button id="clearBtn">Очистить</button></div>
+<div id="result"></div>
+</section>
+<section class="grid">
+<div class="card"><h3>📋 Задачи <span id="taskCount">0</span></h3><div id="tasks"></div></div>
+<div class="card"><h3>🤖 Агенты <span id="agentCount">0</span></h3><div id="agents"></div></div>
+<div class="card"><h3>🧠 Память <span id="memoryCount">0</span></h3><div class="memoryAdd"><input id="memoryInput" placeholder="Сохранить важное решение"><button id="memoryBtn">+</button></div><div id="memory"></div></div>
+<div class="card"><h3>⚡ События</h3><div id="events"></div></div>
+</section>
+</main>
+<footer>AI Command Center v1 • сначала планирование и контроль, затем подключение инструментов</footer>
+</div>
+<script src="/app.js"></script>
+</body></html>
