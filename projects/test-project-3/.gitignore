@@ -1,9 +1,9 @@
-# Node modules
+# Node modules (if any)
 node_modules/
-
-# Logs
-npm-debug.log*
 
 # OS files
 .DS_Store
 Thumbs.db
+
+# Build artifacts
+/dist
