@@ -52,10 +52,10 @@
       "approved": true,
       "review_verdict": null,
       "created_at": "2026-10-04T20:33:52.016043+00:00",
-      "updated_at": "2026-10-04T20:34:01.699681+00:00",
-      "current_agent": null,
-      "current_role": null,
-      "current_round": 0,
+      "updated_at": "2026-10-04T20:34:04.291037+00:00",
+      "current_agent": "WebAppArchitect",
+      "current_role": "architect",
+      "current_round": 1,
       "execution_started_at": "2026-10-04T20:34:01.699670+00:00"
     },
     {
@@ -730,6 +730,12 @@
   "projects": [],
   "memory": [],
   "events": [
+    {
+      "id": "26b0c44a0a",
+      "kind": "agent_start",
+      "message": "TASK-014301E823: запущен WebAppArchitect (architect), раунд 1",
+      "created_at": "2026-10-04T20:34:04.291078+00:00"
+    },
     {
       "id": "661149904b",
       "kind": "status",
