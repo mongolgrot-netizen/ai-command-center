@@ -17,6 +17,8 @@ STATE_REPO_PATH = "data/state.json"
 STATE_CACHE = None
 STATE_LOCK = threading.RLock()
 GITHUB_CONTEXT_CACHE = {"value": "", "at": 0.0}
+EXECUTION_LOCKS = {}
+EXECUTION_LOCKS_GUARD = threading.Lock()
 
 def load_state():
     global STATE_CACHE
@@ -171,6 +173,9 @@ def github_execute_actions(actions,task_id):
             results.append({"path":path,"ok":False,"error":"Нужны path и content"}); continue
         if ".." in Path(path).parts or path.startswith(".git/"):
             results.append({"path":path,"ok":False,"error":"Недопустимый путь"}); continue
+        protected_root = {"app.py","index.html","style.css","app.js","requirements.txt","render.yaml","README.md","manifest.webmanifest","sw.js"}
+        if path in protected_root and os.getenv("ALLOW_CORE_REPO_WRITES","").lower() not in ("1","true","yes"):
+            results.append({"path":path,"ok":False,"error":"Защищён файл ядра AI Command Center. Для пользовательского проекта используй projects/TASK-ID/..."}); continue
         existing=github_get_file(path)
         if existing.get("error") and "HTTP 404" not in existing.get("error",""):
             results.append({"path":path,"ok":False,"error":existing["error"]}); continue
@@ -275,6 +280,17 @@ def approve_task(task_id):
     add_event(s,"approval",f"{task_id}: запуск подтверждён пользователем");save_state(s)
     return jsonify(task)
 def execute_task(task_id):
+    with EXECUTION_LOCKS_GUARD:
+        if task_id in EXECUTION_LOCKS:
+            return
+        EXECUTION_LOCKS[task_id] = True
+    try:
+        _execute_task_locked(task_id)
+    finally:
+        with EXECUTION_LOCKS_GUARD:
+            EXECUTION_LOCKS.pop(task_id, None)
+
+def _execute_task_locked(task_id):
     max_rounds=3
     previous=""
     for round_no in range(1,max_rounds+1):
@@ -299,8 +315,11 @@ def execute_task(task_id):
 {github_project_context()[:1800]}
 Работай по задаче. Нельзя утверждать, что файл изменён, commit сделан или код запущен, если это не подтверждено инструментом.
 КРИТИЧЕСКИ ВАЖНО для developer/coder/backend_developer/frontend_developer/debugger:
-если требуется изменить проект, ты ОБЯЗАН предложить полный JSON-блок в конце:
-{{"actions":[{{"action":"write_file","path":"...","content":"полное содержимое файла"}}]}}
+GitHub уже подключён к AI Command Center. НИКОГДА не проси пользователя прислать GitHub token, создать репозиторий или выполнить git-команды вручную.
+Если требуется изменить проект, в конце ОБЯЗАТЕЛЬНО дай валидный JSON:
+{"actions":[{"action":"write_file","path":"projects/TASK-ID/index.html","content":"полное содержимое файла"}]}
+Для нового пользовательского проекта используй каталог projects/TASK-ID/ и НЕ изменяй файлы самого AI Command Center в корне репозитория.
+Не утверждай, что изменения выполнены, пока это не подтверждено блоком [GITHUB EXECUTION].
 Используй существующий проект как основу и создавай только необходимые файлы.
 Tester должен проверять состояние GitHub после предыдущих изменений и честно дать PASS/FAIL.
 Reviewer обязан дать строку VERDICT: PASS или VERDICT: FAIL.
@@ -318,7 +337,7 @@ Reviewer обязан дать строку VERDICT: PASS или VERDICT: FAIL.
             if isinstance(result,dict) and result.get("error"):
                 s=load_state(); task=next((x for x in s["tasks"] if x["id"]==task_id),None)
                 if task:
-                    err=result["error"]; task["status"]="failed"; task["updated_at"]=now()
+                    err=result["error"]; task["status"]="failed"; task["execution_started_at"]=None; task["current_agent"]=None; task["current_role"]=None; task["updated_at"]=now()
                     task["outputs"].append({"agent":a,"result":err,"error":True,"created_at":now()})
                     add_event(s,"error",f"{task_id}: ошибка агента {a.get('name',role)} — {err[:500]}"); save_state(s)
                 return
@@ -351,7 +370,7 @@ Reviewer обязан дать строку VERDICT: PASS или VERDICT: FAIL.
         if task:
             task["review_verdict"]=explicit_verdict
             if explicit_verdict=="PASS":
-                task["status"]="completed"; task["updated_at"]=now()
+                task["status"]="completed"; task["execution_started_at"]=None; task["current_agent"]=None; task["current_role"]=None; task["updated_at"]=now()
                 add_event(s,"task",f"{task_id}: Reviewer подтвердил PASS, задача завершена")
                 save_state(s)
                 return
@@ -396,9 +415,13 @@ def execute_task_safe(task_id):
 def run_task(task_id):
     s=load_state(); task=next((x for x in s["tasks"] if x["id"]==task_id),None)
     if not task:return jsonify({"error":"Задача не найдена"}),404
+    if task.get("status")=="running":
+        return jsonify({"error":"Задача уже выполняется","task":task}),409
     if s["settings"].get("approval_required",True) and not task.get("approved",False):
         return jsonify({"error":"Требуется подтверждение запуска","task":task}),409
-    task["status"]="running"; task["outputs"]=[]; task["updated_at"]=now()
+    task["status"]="running"; task["outputs"]=[]; task["review_verdict"]=None
+    task["current_agent"]=None; task["current_role"]=None; task["current_round"]=0
+    task["execution_started_at"]=now(); task["updated_at"]=now()
     add_event(s,"status",f"{task_id}: выполнение запущено"); save_state(s)
     threading.Thread(target=execute_task_safe,args=(task_id,),daemon=True).start()
     return jsonify(task),202
