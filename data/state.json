@@ -1,6 +1,62 @@
 {
   "tasks": [
     {
+      "id": "TASK-293159BA77",
+      "title": "Создай простое веб-приложение «Тестовый проект 3» с заголовком, описанием и кнопкой «Начать». Создай файлы в GitHub. Про",
+      "description": "Создай простое веб-приложение «Тестовый проект 3» с заголовком, описанием и кнопкой «Начать». Создай файлы в GitHub. Проведи тестирование. Если найдёшь ошибку — исправь её. Заверши только после VERDICT: PASS.",
+      "status": "planned",
+      "plan": {
+        "summary": "Create a simple web application \"Тестовый проект 3\" with a title, description and a \"Начать\" button, set up the project in a GitHub repository, perform testing, fix any discovered issues, and finalize with a VERDICT: PASS.",
+        "agents": [
+          {
+            "role": "architect",
+            "name": "Alice",
+            "instructions": "Define the overall structure, UI layout, technology stack (HTML/CSS/JavaScript), and repository layout. Produce a brief design document and a list of required files."
+          },
+          {
+            "role": "frontend_developer",
+            "name": "Bob",
+            "instructions": "Create the GitHub repository, add README, implement index.html, style.css, and script.js according to the architect's design. Commit and push all files."
+          },
+          {
+            "role": "tester",
+            "name": "Charlie",
+            "instructions": "Write and execute functional tests: verify page loads, title and description render, \"Начать\" button appears and is clickable, and no console errors. Document any failures."
+          },
+          {
+            "role": "debugger",
+            "name": "Dana",
+            "instructions": "Analyze test failure reports, locate bugs in code, apply fixes, and push updated commits. Re‑run tests until all pass."
+          },
+          {
+            "role": "reviewer",
+            "name": "Eve",
+            "instructions": "Perform a final code review, ensure coding standards, verify that all tests pass, and confirm the repository is ready. Add a VERDICT: PASS comment to the project README."
+          }
+        ],
+        "steps": [
+          "Architect creates design doc and file list",
+          "Frontend developer creates GitHub repo, adds README, implements index.html, style.css, script.js, pushes initial commit",
+          "Tester runs functional tests and records results",
+          "If failures, Debugger fixes code and pushes updates, then Tester re‑runs tests",
+          "Reviewer conducts final review, ensures all tests pass, updates README with VERDICT: PASS",
+          "Project is considered complete"
+        ],
+        "risks": [
+          "Lack of GitHub access credentials may block repo creation",
+          "Missing or incompatible browser features could cause UI errors",
+          "Insufficient test coverage might miss edge‑case bugs",
+          "Team members may misinterpret design specifications"
+        ],
+        "needs_approval": true
+      },
+      "outputs": [],
+      "approved": false,
+      "review_verdict": null,
+      "created_at": "2026-10-04T19:51:43.673956+00:00",
+      "updated_at": "2026-10-04T19:51:43.673973+00:00"
+    },
+    {
       "id": "TASK-3034DAE007",
       "title": "Создай простое веб-приложение «Тестовый проект 2». Нужна современная главная страница, заголовок «Тестовый проект 2», кр",
       "description": "Создай простое веб-приложение «Тестовый проект 2». Нужна современная главная страница, заголовок «Тестовый проект 2», краткое описание и красивая кнопка «Начать». Создай все необходимые файлы проекта в GitHub. После разработки обязательно протестируй проект. Если тест обнаружит ошибку — исправь её и повтори тест. Заверши только после VERDICT: PASS.",
@@ -132,6 +188,51 @@
   ],
   "agents": [
     {
+      "id": "AGENT-608E9A2C99",
+      "name": "Eve",
+      "role": "reviewer",
+      "instructions": "Perform a final code review, ensure coding standards, verify that all tests pass, and confirm the repository is ready. Add a VERDICT: PASS comment to the project README.",
+      "task_id": "TASK-293159BA77",
+      "status": "assigned",
+      "created_at": "2026-10-04T19:51:43.674058+00:00"
+    },
+    {
+      "id": "AGENT-77F68FF7C1",
+      "name": "Dana",
+      "role": "debugger",
+      "instructions": "Analyze test failure reports, locate bugs in code, apply fixes, and push updated commits. Re‑run tests until all pass.",
+      "task_id": "TASK-293159BA77",
+      "status": "assigned",
+      "created_at": "2026-10-04T19:51:43.674051+00:00"
+    },
+    {
+      "id": "AGENT-35DA0E49AB",
+      "name": "Charlie",
+      "role": "tester",
+      "instructions": "Write and execute functional tests: verify page loads, title and description render, \"Начать\" button appears and is clickable, and no console errors. Document any failures.",
+      "task_id": "TASK-293159BA77",
+      "status": "assigned",
+      "created_at": "2026-10-04T19:51:43.674041+00:00"
+    },
+    {
+      "id": "AGENT-AA5D0ACADF",
+      "name": "Bob",
+      "role": "frontend_developer",
+      "instructions": "Create the GitHub repository, add README, implement index.html, style.css, and script.js according to the architect's design. Commit and push all files.",
+      "task_id": "TASK-293159BA77",
+      "status": "assigned",
+      "created_at": "2026-10-04T19:51:43.674011+00:00"
+    },
+    {
+      "id": "AGENT-4C6ED4E6CB",
+      "name": "Alice",
+      "role": "architect",
+      "instructions": "Define the overall structure, UI layout, technology stack (HTML/CSS/JavaScript), and repository layout. Produce a brief design document and a list of required files.",
+      "task_id": "TASK-293159BA77",
+      "status": "assigned",
+      "created_at": "2026-10-04T19:51:43.673999+00:00"
+    },
+    {
       "id": "AGENT-38F92F541E",
       "name": "Morgan",
       "role": "reviewer",
@@ -225,6 +326,12 @@
   "projects": [],
   "memory": [],
   "events": [
+    {
+      "id": "03c5b4dc04",
+      "kind": "task",
+      "message": "Создана задача TASK-293159BA77 и сформирована AI-команда",
+      "created_at": "2026-10-04T19:51:43.674077+00:00"
+    },
     {
       "id": "8c685658e9",
       "kind": "github",
