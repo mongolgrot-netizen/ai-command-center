@@ -1,6 +1,63 @@
 {
   "tasks": [
     {
+      "id": "TASK-52B0E55AC0",
+      "title": "Необходимо создать аи агента для проведения телеграмм каналов",
+      "description": "Необходимо создать аи агента для проведения телеграмм каналов",
+      "status": "planned",
+      "plan": {
+        "summary": "Create an AI‑powered Telegram channel management agent that can schedule posts, moderate content, and provide analytics",
+        "agents": [
+          {
+            "role": "architect",
+            "name": "SystemArchitect",
+            "instructions": "Design overall architecture: Telegram Bot, LLM integration, database, scheduling, moderation pipeline; choose tech stack and security measures"
+          },
+          {
+            "role": "developer",
+            "name": "PythonDev",
+            "instructions": "Implement Telegram Bot using python‑telegram‑bot, integrate LLM via OpenAI API, set up PostgreSQL for storage, add scheduling, moderation filters, and analytics endpoints"
+          },
+          {
+            "role": "tester",
+            "name": "QAEngineer",
+            "instructions": "Create test cases for bot commands, posting, moderation, error handling; perform unit and integration testing"
+          },
+          {
+            "role": "reviewer",
+            "name": "CodeReviewer",
+            "instructions": "Review code for security, privacy, compliance with Telegram terms, and ensure no malicious behavior"
+          }
+        ],
+        "steps": [
+          "Research Telegram Bot API limits and required permissions",
+          "Architect designs system diagram and data flow",
+          "Developer sets up repository and CI/CD pipeline",
+          "Implement bot core: command handling and webhook/server",
+          "Integrate LLM for content generation and moderation",
+          "Implement scheduling module using APScheduler",
+          "Set up PostgreSQL schema for channels, posts, analytics",
+          "Write unit and integration tests",
+          "Conduct security review and privacy assessment",
+          "Deploy to cloud with environment variables for tokens",
+          "Monitor performance and iterate based on feedback"
+        ],
+        "risks": [
+          "Telegram API rate limits may cause posting delays",
+          "LLM may generate inappropriate content requiring robust moderation",
+          "Storing user data must comply with GDPR and other privacy regulations",
+          "Bot token leakage could compromise channels",
+          "Bot may be banned if it violates Telegram policies"
+        ],
+        "needs_approval": true
+      },
+      "outputs": [],
+      "approved": false,
+      "review_verdict": null,
+      "created_at": "2026-10-06T18:29:55.351247+00:00",
+      "updated_at": "2026-10-06T18:29:55.351261+00:00"
+    },
+    {
       "id": "TASK-C62FF787C3",
       "title": "Проведи анализ того, как можно улучшить продвижение моих объявлений на Авито и составь пошаговый план.»",
       "description": "Проведи анализ того, как можно улучшить продвижение моих объявлений на Авито и составь пошаговый план.»",
@@ -870,6 +927,42 @@
   ],
   "agents": [
     {
+      "id": "AGENT-CA8785F1D4",
+      "name": "CodeReviewer",
+      "role": "reviewer",
+      "instructions": "Review code for security, privacy, compliance with Telegram terms, and ensure no malicious behavior",
+      "task_id": "TASK-52B0E55AC0",
+      "status": "assigned",
+      "created_at": "2026-10-06T18:29:55.351324+00:00"
+    },
+    {
+      "id": "AGENT-B301929215",
+      "name": "QAEngineer",
+      "role": "tester",
+      "instructions": "Create test cases for bot commands, posting, moderation, error handling; perform unit and integration testing",
+      "task_id": "TASK-52B0E55AC0",
+      "status": "assigned",
+      "created_at": "2026-10-06T18:29:55.351314+00:00"
+    },
+    {
+      "id": "AGENT-5F8EAE9F02",
+      "name": "PythonDev",
+      "role": "developer",
+      "instructions": "Implement Telegram Bot using python‑telegram‑bot, integrate LLM via OpenAI API, set up PostgreSQL for storage, add scheduling, moderation filters, and analytics endpoints",
+      "task_id": "TASK-52B0E55AC0",
+      "status": "assigned",
+      "created_at": "2026-10-06T18:29:55.351305+00:00"
+    },
+    {
+      "id": "AGENT-3D9D8BE0A2",
+      "name": "SystemArchitect",
+      "role": "architect",
+      "instructions": "Design overall architecture: Telegram Bot, LLM integration, database, scheduling, moderation pipeline; choose tech stack and security measures",
+      "task_id": "TASK-52B0E55AC0",
+      "status": "assigned",
+      "created_at": "2026-10-06T18:29:55.351293+00:00"
+    },
+    {
       "id": "AGENT-0837282878",
       "name": "DataAnalyst",
       "role": "analyst",
@@ -1256,6 +1349,12 @@
     }
   ],
   "events": [
+    {
+      "id": "67c32efb77",
+      "kind": "task",
+      "message": "Создана задача TASK-52B0E55AC0 и сформирована AI-команда",
+      "created_at": "2026-10-06T18:29:55.351350+00:00"
+    },
     {
       "id": "bb1cd2641b",
       "kind": "task",
