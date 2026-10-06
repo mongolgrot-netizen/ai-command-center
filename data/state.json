@@ -4,7 +4,7 @@
       "id": "TASK-52B0E55AC0",
       "title": "Необходимо создать аи агента для проведения телеграмм каналов",
       "description": "Необходимо создать аи агента для проведения телеграмм каналов",
-      "status": "running",
+      "status": "failed",
       "plan": {
         "summary": "Create an AI‑powered Telegram channel management agent that can schedule posts, moderate content, and provide analytics",
         "agents": [
@@ -114,9 +114,9 @@
         }
       ],
       "approved": true,
-      "review_verdict": null,
+      "review_verdict": "FAIL",
       "created_at": "2026-10-06T18:29:55.351247+00:00",
-      "updated_at": "2026-10-06T18:30:30.306125+00:00",
+      "updated_at": "2026-10-06T18:30:34.796463+00:00",
       "current_agent": null,
       "current_role": null,
       "current_round": 2,
@@ -1414,6 +1414,12 @@
     }
   ],
   "events": [
+    {
+      "id": "a47686b969",
+      "kind": "task",
+      "message": "TASK-52B0E55AC0: Reviewer не подтвердил PASS после 2 раундов",
+      "created_at": "2026-10-06T18:30:34.796550+00:00"
+    },
     {
       "id": "75dc3809fe",
       "kind": "agent_start",
