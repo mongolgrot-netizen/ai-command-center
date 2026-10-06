@@ -106,10 +106,10 @@
       "approved": true,
       "review_verdict": null,
       "created_at": "2026-10-06T18:29:55.351247+00:00",
-      "updated_at": "2026-10-06T18:30:28.758411+00:00",
-      "current_agent": null,
-      "current_role": null,
-      "current_round": 1,
+      "updated_at": "2026-10-06T18:30:30.306125+00:00",
+      "current_agent": "CodeReviewer",
+      "current_role": "reviewer",
+      "current_round": 2,
       "execution_started_at": "2026-10-06T18:30:04.526300+00:00"
     },
     {
@@ -1404,6 +1404,12 @@
     }
   ],
   "events": [
+    {
+      "id": "75dc3809fe",
+      "kind": "agent_start",
+      "message": "TASK-52B0E55AC0: запущен CodeReviewer (reviewer), раунд 2",
+      "created_at": "2026-10-06T18:30:30.306158+00:00"
+    },
     {
       "id": "d4f91209f9",
       "kind": "test",
